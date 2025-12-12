@@ -2,6 +2,7 @@
 """
 Export Plotly charts from the Solar PV notebook as standalone HTML files.
 Each chart is saved as a minimal HTML file that can be embedded via iframe.
+Updated to ensure proper responsiveness by removing fixed width/height.
 """
 
 import json
@@ -14,19 +15,19 @@ OUTPUT_DIR = Path(__file__).parent.parent / "plots"
 
 # Chart configurations - maps cell output to filename and description
 CHARTS = [
-    {"line": 2563, "name": "metrics_evaluation", "desc": "Metrics Evaluation: Energy Sold, Capacity Installed, Installations"},
-    {"line": 8657, "name": "technologies_comparison", "desc": "Energy Sold by Technology Type"},
-    {"line": 11965, "name": "decomposition", "desc": "Time Series Decomposition"},
-    {"line": 14256, "name": "acf_pacf", "desc": "ACF and PACF Analysis"},
-    {"line": 17359, "name": "transformations", "desc": "Solar PV Transformation & Differencing"},
-    {"line": 18762, "name": "model_selection_acf", "desc": "ACF/PACF of Transformed Series for Model Selection"},
-    {"line": 20450, "name": "residuals_diagnostic", "desc": "Residuals Diagnostic"},
-    {"line": 21872, "name": "forecast_full", "desc": "Solar Photovoltaic vs. Fitted and Forecast (Full)"},
-    {"line": 23219, "name": "forecast_trimmed", "desc": "Solar Photovoltaic vs. Fitted and Forecast (Trimmed)"},
+    {"name": "metrics_evaluation", "desc": "Metrics Evaluation: Energy Sold, Capacity Installed, Installations"},
+    {"name": "technologies_comparison", "desc": "Energy Sold by Technology Type"},
+    {"name": "decomposition", "desc": "Time Series Decomposition"},
+    {"name": "acf_pacf", "desc": "ACF and PACF Analysis"},
+    {"name": "transformations", "desc": "Solar PV Transformation & Differencing"},
+    {"name": "model_selection_acf", "desc": "ACF/PACF of Transformed Series for Model Selection"},
+    {"name": "residuals_diagnostic", "desc": "Residuals Diagnostic"},
+    {"name": "forecast_full", "desc": "Solar Photovoltaic vs. Fitted and Forecast (Full)"},
+    {"name": "forecast_trimmed", "desc": "Solar Photovoltaic vs. Fitted and Forecast (Trimmed)"},
 ]
 
 
-def extract_plotly_from_notebook(notebook_path: Path) -> dict:
+def extract_plotly_from_notebook(notebook_path: Path) -> list:
     """Load notebook and extract cells with Plotly outputs."""
     with open(notebook_path, 'r', encoding='utf-8') as f:
         notebook = json.load(f)
@@ -52,12 +53,24 @@ def extract_plotly_from_notebook(notebook_path: Path) -> dict:
     return cells_with_plotly
 
 
+def make_responsive(plotly_json: dict) -> dict:
+    """Modify layout to be responsive by removing fixed dimensions."""
+    if 'layout' in plotly_json:
+        layout = plotly_json['layout']
+        # Remove fixed width/height to allow responsive sizing
+        layout.pop('width', None)
+        layout.pop('height', None)
+        # Enable autosize
+        layout['autosize'] = True
+        # Adjust margins for better fit
+        layout['margin'] = {'l': 50, 'r': 30, 't': 80, 'b': 50}
+    return plotly_json
+
+
 def create_html_chart(plotly_json: dict, title: str = "") -> str:
     """Create a minimal standalone HTML file for a Plotly chart."""
-    # Update layout for better embedding
-    if 'layout' in plotly_json:
-        plotly_json['layout']['autosize'] = True
-        plotly_json['layout']['margin'] = {'l': 50, 'r': 30, 't': 80, 'b': 50}
+    # Make chart responsive
+    plotly_json = make_responsive(plotly_json)
     
     html = f'''<!DOCTYPE html>
 <html lang="en">
@@ -68,8 +81,8 @@ def create_html_chart(plotly_json: dict, title: str = "") -> str:
     <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
     <style>
         * {{ margin: 0; padding: 0; box-sizing: border-box; }}
-        html, body {{ width: 100%; height: 100%; overflow: hidden; }}
-        #chart {{ width: 100%; height: 100%; }}
+        html, body {{ width: 100%; height: 100%; }}
+        #chart {{ width: 100%; height: 100%; min-height: 400px; }}
     </style>
 </head>
 <body>
@@ -83,6 +96,11 @@ def create_html_chart(plotly_json: dict, title: str = "") -> str:
             displaylogo: false
         }};
         Plotly.newPlot('chart', figure.data, figure.layout, config);
+        
+        // Resize handler
+        window.addEventListener('resize', function() {{
+            Plotly.Plots.resize('chart');
+        }});
     </script>
 </body>
 </html>'''

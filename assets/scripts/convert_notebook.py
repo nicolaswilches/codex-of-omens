@@ -2,6 +2,7 @@
 """
 Convert Jupyter notebook to HTML without requiring nbconvert.
 Creates a self-contained HTML file with all outputs preserved.
+Updated to properly handle Plotly data with responsiveness.
 """
 
 import json
@@ -42,11 +43,13 @@ def markdown_to_html(md_text):
         
         # Headings
         if line.startswith('#'):
-            level = len(re.match(r'^#+', line).group())
-            text = line[level:].strip()
-            text = re.sub(r'\*\*(.+?)\*\*', r'<strong>\1</strong>', text)
-            result.append(f'<h{level}>{text}</h{level}>')
-            continue
+            match = re.match(r'^#+', line)
+            if match:
+                level = len(match.group())
+                text = line[level:].strip()
+                text = re.sub(r'\*\*(.+?)\*\*', r'<strong>\1</strong>', text)
+                result.append(f'<h{level}>{text}</h{level}>')
+                continue
         
         # Bold and italic
         line = re.sub(r'\*\*(.+?)\*\*', r'<strong>\1</strong>', line)
@@ -78,12 +81,24 @@ def markdown_to_html(md_text):
     return '\n'.join(result)
 
 
+def make_responsive(plotly_json: dict) -> dict:
+    """Modify layout to be responsive."""
+    if 'layout' in plotly_json:
+        layout = plotly_json['layout']
+        layout.pop('width', None)
+        layout.pop('height', None)
+        layout['autosize'] = True
+        layout['margin'] = {'l': 50, 'r': 30, 't': 80, 'b': 50}
+    return plotly_json
+
+
 def convert_notebook_to_html(notebook_path: Path, output_path: Path):
     """Convert notebook to standalone HTML."""
     with open(notebook_path, 'r', encoding='utf-8') as f:
         notebook = json.load(f)
     
     cells_html = []
+    chart_counter = 0
     
     for cell in notebook.get('cells', []):
         cell_type = cell.get('cell_type', '')
@@ -110,14 +125,18 @@ def convert_notebook_to_html(notebook_path: Path, output_path: Path):
                     
                     # Plotly
                     if 'application/vnd.plotly.v1+json' in data:
-                        plotly_data = data['application/vnd.plotly.v1+json']
-                        chart_id = f"plotly-{id(output)}"
+                        plotly_data = make_responsive(data['application/vnd.plotly.v1+json'])
+                        chart_counter += 1
+                        chart_id = f"plotly-chart-{chart_counter}"
+                        # Use a separate script block with proper JSON serialization
+                        plotly_json_str = json.dumps(plotly_data)
                         outputs_html.append(f'''
-                            <div id="{chart_id}" class="plotly-chart"></div>
-                            <script>
+                            <div id="{chart_id}" class="plotly-chart" style="width:100%; min-height:500px;"></div>
+                            <script type="text/javascript">
                                 (function() {{
-                                    var data = {json.dumps(plotly_data)};
-                                    Plotly.newPlot("{chart_id}", data.data, data.layout, {{responsive: true, displaylogo: false}});
+                                    var chartData = {plotly_json_str};
+                                    var config = {{responsive: true, displaylogo: false}};
+                                    Plotly.newPlot("{chart_id}", chartData.data, chartData.layout, config);
                                 }})();
                             </script>
                         ''')
@@ -241,6 +260,7 @@ def convert_notebook_to_html(notebook_path: Path, output_path: Path):
         
         .plotly-chart {{
             margin: 1rem 0;
+            width: 100%;
         }}
         
         a {{
@@ -317,6 +337,7 @@ def convert_notebook_to_html(notebook_path: Path, output_path: Path):
         f.write(html_doc)
     
     print(f"Converted notebook saved to: {output_path}")
+    print(f"Total Plotly charts: {chart_counter}")
 
 
 if __name__ == "__main__":
