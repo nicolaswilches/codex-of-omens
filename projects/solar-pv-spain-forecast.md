@@ -72,7 +72,7 @@ From a time series perspective:
 Because we are interested in **operational output and seasonal behavior**, the project models **energy sold**, not installed capacity or installation counts.
 
 <div class="chart-container">
-<iframe src="/assets/plots/metrics_evaluation.html" width="100%" height="520" loading="lazy"></iframe>
+<iframe src="{{ site.baseurl }}/assets/plots/metrics_evaluation.html" width="100%" height="520" loading="lazy"></iframe>
 </div>
 
 #### 3.2 Comparing technologies
@@ -96,7 +96,7 @@ After comparing behavior across technologies and considering Spain's current ene
 - It is highly relevant for **future renewable expansion**.
 
 <div class="chart-container">
-<iframe src="/assets/plots/technologies_comparison.html" width="100%" height="620" loading="lazy"></iframe>
+<iframe src="{{ site.baseurl }}/assets/plots/technologies_comparison.html" width="100%" height="620" loading="lazy"></iframe>
 </div>
 
 ---
@@ -117,7 +117,7 @@ This confirms that Solar PV energy sold is **non-stationary**, with:
 - Strong and systematic yearly seasonality.
 
 <div class="chart-container">
-<iframe src="/assets/plots/decomposition.html" width="100%" height="920" loading="lazy"></iframe>
+<iframe src="{{ site.baseurl }}/assets/plots/decomposition.html" width="100%" height="920" loading="lazy"></iframe>
 </div>
 
 ---
@@ -156,7 +156,7 @@ The final transformed series (log + first difference + seasonal difference at 12
 - Is appropriately prepared for ARIMA modeling.
 
 <div class="chart-container">
-<iframe src="/assets/plots/transformations.html" width="100%" height="920" loading="lazy"></iframe>
+<iframe src="{{ site.baseurl }}/assets/plots/transformations.html" width="100%" height="920" loading="lazy"></iframe>
 </div>
 
 ---
@@ -188,7 +188,7 @@ This pattern suggests:
 - A **seasonal MA term** to capture yearly dependencies.
 
 <div class="chart-container">
-<iframe src="/assets/plots/acf_pacf.html" width="100%" height="920" loading="lazy"></iframe>
+<iframe src="{{ site.baseurl }}/assets/plots/acf_pacf.html" width="100%" height="920" loading="lazy"></iframe>
 </div>
 
 #### 6.2 Model selection
@@ -217,7 +217,7 @@ Residual analysis indicates:
 - The model is statistically adequate for forecasting.
 
 <div class="chart-container">
-<iframe src="/assets/plots/residuals_diagnostic.html" width="100%" height="920" loading="lazy"></iframe>
+<iframe src="{{ site.baseurl }}/assets/plots/residuals_diagnostic.html" width="100%" height="920" loading="lazy"></iframe>
 </div>
 
 ---
@@ -246,7 +246,7 @@ The confidence bands:
 - Widen as the horizon extends, reflecting **increasing uncertainty** typical of multi-step ahead forecasts.
 
 <div class="chart-container">
-<iframe src="/assets/plots/forecast_trimmed.html" width="100%" height="620" loading="lazy"></iframe>
+<iframe src="{{ site.baseurl }}/assets/plots/forecast_trimmed.html" width="100%" height="620" loading="lazy"></iframe>
 </div>
 
 ---
@@ -309,7 +309,7 @@ Potential extensions:
 
 ### 10. Code and Notebook
 
-- **Full interactive notebook:** [View complete analysis notebook](/notebooks/solar-pv-spain-forecast.html)
+- **Full interactive notebook:** [View complete analysis notebook]({{ site.baseurl }}/notebooks/solar-pv-spain-forecast.html)
 - **GitHub repository:** [nicolaswilches/portfolio](https://github.com/nicolaswilches)
 
 The notebook includes:

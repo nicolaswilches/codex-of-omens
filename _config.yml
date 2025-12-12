@@ -7,9 +7,9 @@ theme: minima
 # Markdown processor
 markdown: kramdown
 
-# Site settings
-url: "" # Base URL for production
-baseurl: "" # Subpath of your site
+# Site settings - CRITICAL for project sites
+url: "https://nicolaswilches.github.io"
+baseurl: "/portfolio"  # Repository name - required for project sites
 
 # Build settings
 exclude:
@@ -18,3 +18,4 @@ exclude:
   - Gemfile.lock
   - node_modules
   - vendor
+  - assets/scripts
