@@ -1,0 +1,22 @@
+# ============================================================
+# ds-portfolio gitignore
+# ============================================================
+
+# Python
+.venv/
+__pycache__/
+*.py[cod]
+
+# Jupyter
+.ipynb_checkpoints/
+
+# macOS
+.DS_Store
+
+# Secrets
+.env
+*.env
+
+# Large outputs (export them as separate files instead)
+*.mp4
+*.mov
