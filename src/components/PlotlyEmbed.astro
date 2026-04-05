@@ -1,0 +1,22 @@
+---
+interface Props {
+  src: string;
+  title: string;
+  aspectRatio?: string;
+}
+
+const { src, title, aspectRatio = '16/9' } = Astro.props;
+---
+
+<figure class="my-8 not-prose">
+  <div class="overflow-hidden rounded-md border border-ink-150" style={`aspect-ratio: ${aspectRatio}`}>
+    <iframe
+      src={src}
+      title={title}
+      class="h-full w-full"
+      loading="lazy"
+      sandbox="allow-scripts allow-same-origin"
+    ></iframe>
+  </div>
+  <figcaption class="mt-2 text-center text-sm text-ink-400">{title}</figcaption>
+</figure>

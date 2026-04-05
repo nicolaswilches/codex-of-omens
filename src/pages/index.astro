@@ -1,0 +1,47 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ProjectRow from '../components/ProjectRow.astro';
+import TradingIcon from '../components/icons/TradingIcon.astro';
+import EnergyIcon from '../components/icons/EnergyIcon.astro';
+import EVIcon from '../components/icons/EVIcon.astro';
+import { getCollection } from 'astro:content';
+
+const projects = (await getCollection('projects')).sort((a, b) => a.data.sortOrder - b.data.sortOrder);
+const base = import.meta.env.BASE_URL;
+
+const iconMap: Record<string, any> = {
+  'daily-trading-system': TradingIcon,
+  'spain-energy-risk-index': EnergyIcon,
+  'iberdrola-ev-network': EVIcon,
+};
+---
+
+<BaseLayout title="Nicolás Higuera Wilches — Data Science Portfolio">
+  <div class="mx-auto max-w-[40em] px-6">
+    <!-- Intro -->
+    <section class="pb-10">
+      <h1 class="sr-only">Nicolás Higuera Wilches — Data Science Portfolio</h1>
+      <p class="text-ink-600 leading-relaxed">
+        I build machine learning systems that work in production — from quantitative trading pipelines to energy grid risk forecasting. This site is a collection of those projects.
+      </p>
+    </section>
+
+    <!-- Projects -->
+    <section>
+      <h2 class="text-sm font-medium text-ink-400 uppercase tracking-wider mb-2">Projects</h2>
+      <div class="divide-y divide-ink-100">
+        {projects.map((project) => (
+          <ProjectRow
+            title={project.data.title}
+            tagline={project.data.tagline}
+            tags={project.data.techStack.slice(0, 5)}
+            status={project.data.status}
+            date={project.data.date}
+            href={`${base}/projects/${project.id}/`}
+            icon={iconMap[project.id] || TradingIcon}
+          />
+        ))}
+      </div>
+    </section>
+  </div>
+</BaseLayout>

@@ -1,0 +1,27 @@
+---
+const year = new Date().getFullYear();
+
+const links = [
+  { label: 'GitHub', href: 'https://github.com/nicolaswilches' },
+  { label: 'LinkedIn', href: 'https://linkedin.com/in/nicolaswilches' },
+  { label: 'Email', href: 'mailto:nicolaswilches@icloud.com' },
+];
+---
+
+<footer class="mx-auto max-w-[40em] px-6 py-12">
+  <div class="border-t border-ink-100 pt-8 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+    <p class="text-sm text-ink-400">&copy; {year}</p>
+    <div class="flex gap-5">
+      {links.map(({ label, href }) => (
+        <a
+          href={href}
+          target={href.startsWith('mailto') ? undefined : '_blank'}
+          rel={href.startsWith('mailto') ? undefined : 'noopener noreferrer'}
+          class="text-sm text-ink-400 hover:text-ink-900 transition-colors"
+        >
+          {label}
+        </a>
+      ))}
+    </div>
+  </div>
+</footer>

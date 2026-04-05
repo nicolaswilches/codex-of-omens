@@ -1,0 +1,51 @@
+---
+import TechBadge from './TechBadge.astro';
+import StatusBadge from './StatusBadge.astro';
+
+interface Props {
+  title: string;
+  tagline: string;
+  heroImage: string;
+  techStack: string[];
+  status: 'complete' | 'in-progress' | 'coming-soon';
+  href: string;
+}
+
+const { title, tagline, heroImage, techStack, status, href } = Astro.props;
+const isComingSoon = status === 'coming-soon';
+---
+
+<a
+  href={isComingSoon ? undefined : href}
+  class:list={[
+    'group flex flex-col overflow-hidden rounded-xl border border-navy-200 bg-white transition-all duration-200',
+    isComingSoon ? 'cursor-default opacity-60' : 'hover:-translate-y-1 hover:shadow-lg hover:border-navy-300',
+  ]}
+>
+  <div class="aspect-video overflow-hidden bg-navy-100">
+    <img
+      src={heroImage}
+      alt={`${title} preview`}
+      class:list={[
+        'h-full w-full object-cover transition-transform duration-300',
+        !isComingSoon && 'group-hover:scale-105',
+      ]}
+      loading="lazy"
+    />
+  </div>
+  <div class="flex flex-1 flex-col gap-3 p-5">
+    <div class="flex items-center justify-between gap-2">
+      <h3 class="text-lg font-semibold text-navy-900">{title}</h3>
+      <StatusBadge status={status} />
+    </div>
+    <p class="text-sm leading-relaxed text-navy-600">{tagline}</p>
+    <div class="mt-auto flex flex-wrap gap-1.5 pt-2">
+      {techStack.slice(0, 4).map((tech) => <TechBadge label={tech} />)}
+      {techStack.length > 4 && (
+        <span class="inline-block rounded-full bg-navy-100 px-3 py-1 text-xs font-medium text-navy-500">
+          +{techStack.length - 4}
+        </span>
+      )}
+    </div>
+  </div>
+</a>

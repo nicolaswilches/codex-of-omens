@@ -1,0 +1,33 @@
+---
+const base = import.meta.env.BASE_URL;
+const currentPath = Astro.url.pathname;
+
+const links = [
+  { label: 'Projects', href: `${base}/` },
+  { label: 'About', href: `${base}/about/` },
+];
+---
+
+<nav class="mx-auto max-w-[40em] px-6 pt-10 pb-8">
+  <div class="flex items-center justify-between">
+    <a href={`${base}/`} class="text-ink-900 font-semibold hover:text-ink-600 transition-colors">
+      <span class="hidden sm:inline">Nicolás Higuera Wilches</span>
+      <span class="sm:hidden">NHW</span>
+    </a>
+    <div class="flex gap-6">
+      {links.map(({ label, href }) => (
+        <a
+          href={href}
+          class:list={[
+            'text-sm transition-colors',
+            currentPath === href
+              ? 'text-ink-900'
+              : 'text-ink-400 hover:text-ink-900',
+          ]}
+        >
+          {label}
+        </a>
+      ))}
+    </div>
+  </div>
+</nav>

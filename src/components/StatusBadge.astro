@@ -1,0 +1,23 @@
+---
+interface Props {
+  status: 'complete' | 'in-progress' | 'coming-soon';
+}
+
+const { status } = Astro.props;
+
+const styles = {
+  'complete': 'bg-emerald-100 text-emerald-700',
+  'in-progress': 'bg-amber-100 text-amber-700',
+  'coming-soon': 'bg-navy-100 text-navy-500',
+};
+
+const labels = {
+  'complete': 'Complete',
+  'in-progress': 'In Progress',
+  'coming-soon': 'Coming Soon',
+};
+---
+
+<span class:list={['inline-block rounded-full px-3 py-1 text-xs font-semibold', styles[status]]}>
+  {labels[status]}
+</span>

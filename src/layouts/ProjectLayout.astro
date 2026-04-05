@@ -1,0 +1,88 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import DemoButton from '../components/DemoButton.astro';
+
+interface Props {
+  title: string;
+  tagline: string;
+  date: Date;
+  updatedDate?: Date;
+  status: 'complete' | 'in-progress' | 'coming-soon';
+  heroImage: string;
+  techStack: string[];
+  tags: string[];
+  githubUrl?: string;
+  liveUrl?: string;
+  teamSize?: number;
+  duration?: string;
+  headings: { depth: number; slug: string; text: string }[];
+}
+
+const base = import.meta.env.BASE_URL;
+const {
+  title, tagline, date, updatedDate, status,
+  techStack, tags, githubUrl, liveUrl, teamSize, duration, headings,
+} = Astro.props;
+
+const dateStr = date.toLocaleDateString('en-US', { year: 'numeric', month: 'long' });
+const tocHeadings = headings.filter((h) => h.depth === 2);
+---
+
+<BaseLayout title={`${title} — Nicolás Higuera Wilches`} description={tagline}>
+  <div class="mx-auto max-w-[40em] px-6">
+    <!-- Back -->
+    <a href={`${base}/`} class="inline-flex items-center gap-1 text-sm text-ink-400 hover:text-ink-900 transition-colors mb-8">
+      <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+      </svg>
+      Projects
+    </a>
+
+    <!-- Header -->
+    <header class="pb-8">
+      <h1 class="text-2xl font-semibold text-ink-900 sm:text-3xl">{title}</h1>
+      <p class="mt-3 text-ink-500 leading-relaxed">{tagline}</p>
+
+      <!-- Meta -->
+      <div class="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-ink-400">
+        <span>{dateStr}</span>
+        {teamSize && <span>{teamSize === 1 ? 'Solo' : `Team of ${teamSize}`}</span>}
+        {duration && <span>{duration}</span>}
+      </div>
+
+      <!-- Actions -->
+      {(liveUrl || githubUrl) && (
+        <div class="mt-5 flex flex-wrap gap-3">
+          {liveUrl && <DemoButton href={liveUrl} label="Live app" variant="primary" />}
+          {githubUrl && <DemoButton href={githubUrl} label="Source" variant="secondary" />}
+        </div>
+      )}
+
+      <!-- Tech tags -->
+      <div class="mt-5 flex flex-wrap gap-1.5">
+        {techStack.map((tech) => (
+          <span class="text-xs text-ink-500 border border-ink-150 rounded-full px-2 py-0.5">
+            {tech}
+          </span>
+        ))}
+      </div>
+    </header>
+
+    <div class="border-t border-ink-100" />
+
+    <!-- Content -->
+    <article class="prose max-w-none py-10">
+      <slot />
+    </article>
+
+    <!-- Bottom nav -->
+    <div class="border-t border-ink-100 pt-8 pb-4">
+      <a href={`${base}/`} class="inline-flex items-center gap-1 text-sm text-ink-400 hover:text-ink-900 transition-colors">
+        <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+        </svg>
+        All projects
+      </a>
+    </div>
+  </div>
+</BaseLayout>

@@ -1,0 +1,110 @@
+---
+title: "Spain Energy Grid Risk Index"
+tagline: "A production ML system that forecasts next-day systemic risk of Spain's electrical grid, deployed as a containerized FastAPI service with full CI/CD."
+date: 2026-01-15
+status: "complete"
+featured: true
+sortOrder: 2
+heroImage: "/portfolio/embeds/placeholder-energy.svg"
+techStack: ["Python", "LightGBM", "FastAPI", "Docker", "GitHub Actions", "PCA", "REE API", "Open-Meteo"]
+tags: ["ml", "production", "mlops"]
+githubUrl: "https://github.com/nicolaswilches/spain-energy-risk-index"
+liveUrl: "https://spain-energy-risk-index.onrender.com"
+teamSize: 5
+duration: "3 months"
+---
+
+import MetricCard from '../../components/MetricCard.astro';
+
+## The Problem
+
+Spain's electrical grid operator (Red Electrica — REE) publishes granular daily data on demand, generation mix, weather, and spot prices. But there is no single, unified metric that captures the overall systemic stress of the grid on any given day. As renewable penetration increases, so does volatility — and grid operators, energy traders, and policymakers need a forward-looking risk signal.
+
+We built a system that constructs a **Grid Risk Index** from scratch using PCA, then trains a model to **forecast it one day ahead**, with an emphasis on catching dangerous days even at the cost of more false alarms.
+
+## Approach
+
+The project has two stages: **construct the risk index** (the target variable), then **forecast it**.
+
+### Stage 1: Constructing the Risk Index
+
+There's no pre-existing "grid risk" label to train on. We created one using Principal Component Analysis (PCA) on three core stress factors derived from REE data:
+
+| Factor | What it captures |
+|--------|-----------------|
+| **Demand stress** | How far today's demand deviates from the 30-day rolling mean |
+| **Renewable gap** | Mismatch between renewable generation and total demand |
+| **Price signal** | Spot price deviation from its recent moving average |
+
+PCA compresses these three correlated signals into a single dimension. MinMax scaling maps it to [0, 1], where 0 is a completely stable grid and 1 is critical stress. Percentile-based thresholds then assign five categories:
+
+| Category | Range | Meaning |
+|----------|-------|---------|
+| Low | 0.00 – 0.25 | Normal operations |
+| Stable | 0.25 – 0.45 | Minor stress |
+| Elevated | 0.45 – 0.65 | Increased vigilance |
+| Severe | 0.65 – 0.80 | Active risk management |
+| Extreme | 0.80 – 1.00 | Emergency protocols |
+
+### Stage 2: Forecasting with Quantile LightGBM
+
+With the risk index constructed, we train a **quantile LightGBM regressor** at the 90th percentile (α = 0.90). This means the model predicts a value that the true risk will fall below 90% of the time — a deliberately conservative estimate that errs on the side of safety.
+
+**Why quantile regression?** In grid risk, the cost of a missed dangerous day (false negative) is far greater than a false alarm (false positive). We formalized this with an **asymmetric cost matrix** where missing a high-risk day costs 10x more than a false alarm.
+
+The feature set includes:
+- Lagged risk index values (1, 2, 3, 7 days)
+- Day-of-week and month indicators
+- Weather forecasts (temperature, wind speed, degree days)
+- Recent demand and generation trends
+- Spot price momentum
+
+## Key Results
+
+<div class="grid grid-cols-2 gap-4 sm:grid-cols-3 not-prose my-8">
+  <MetricCard value="56.2%" label="Cost reduction vs. baseline" />
+  <MetricCard value="α = 0.90" label="Quantile level (conservative)" />
+  <MetricCard value="10:1" label="FN:FP cost ratio" />
+</div>
+
+The model achieves a **56.2% reduction in asymmetric cost** compared to a persistence baseline (predicting tomorrow = today). The F3 score for extreme-risk days — which weights recall 3x higher than precision — shows the model catches the majority of dangerous days.
+
+## Production System
+
+This isn't a notebook exercise. The model is deployed as a **production FastAPI service** with a complete engineering stack:
+
+```
+Git Push → GitHub Actions CI/CD
+    │
+    ├─ train.yml    → Train on sample data
+    ├─ Lint + Test  → flake8 + pytest
+    ├─ Docker Build → Bake model into image
+    └─ Push to GHCR → ghcr.io tagged with commit SHA
+          │
+          ▼
+    Render.com pulls image → Live API
+          │
+          ▼
+    webapp/index.html → User-facing risk dashboard
+```
+
+**The API** accepts a target date, fetches live data from REE and Open-Meteo weather APIs, runs the trained model, and returns a risk prediction with its category.
+
+**The web app** is a self-contained single-page HTML application that calls the API and displays the prediction with a color-coded risk gauge, category badge, and contextual guidance for each risk level.
+
+### CI/CD Pipeline
+
+Every push to `main` triggers a full pipeline:
+1. **Train** — Run training on sample data to validate the pipeline
+2. **Lint & Test** — flake8 for code quality, pytest for API integration tests
+3. **Build** — Docker image with the model baked in (no separate model registry)
+4. **Push** — Tagged image to GitHub Container Registry
+5. **Deploy** — Manual trigger on Render to pull the latest validated image
+
+## Challenges
+
+**Constructing a meaningful target variable** was the core intellectual challenge. Unlike standard ML tasks where the label is given, we had to define what "grid risk" means, validate that the PCA-derived index captures real-world stress patterns, and ensure the thresholds produce actionable categories.
+
+**Asymmetric cost optimization** required moving beyond standard metrics like RMSE. We implemented a custom cost function where missing a severe/extreme day is penalized 10x more than a false alarm, which directly shaped the model's behavior toward safety-first predictions.
+
+**Live data integration** introduced real-world complexity: the REE API has rate limits, the Open-Meteo weather API returns forecasts in different formats depending on the horizon, and both can experience downtime. The FastAPI service handles these gracefully with retries and fallback logic.

@@ -1,0 +1,120 @@
+---
+title: "Daily Trading System"
+tagline: "A quantitative ML pipeline that forecasts next-day stock price direction and magnitude, served through a live Streamlit dashboard."
+date: 2025-11-01
+status: "complete"
+featured: true
+sortOrder: 1
+heroImage: "/portfolio/embeds/placeholder-trading.svg"
+techStack: ["Python", "LightGBM", "Polars", "Optuna", "Streamlit", "SimFin API"]
+tags: ["ml", "time-series", "dashboard"]
+githubUrl: "https://github.com/nicolaswilches/daily-trading-system"
+liveUrl: "https://nicolaswilches-daily-trading-system-main-2ez8iq.streamlit.app/"
+teamSize: 5
+duration: "3 months"
+---
+
+import MetricCard from '../../components/MetricCard.astro';
+
+## The Problem
+
+Retail investors face an asymmetric information gap. Institutional traders have access to sophisticated quantitative tools, while most individual investors rely on intuition, news sentiment, or manual chart analysis. We wanted to build a system that answers two concrete questions for any given stock on any given day: **will the price go up or down tomorrow?** and **by how much?**
+
+The goal was not to build a black-box trading bot, but a transparent, interpretable system where every signal can be traced back to the features that produced it.
+
+## Approach
+
+The system is structured as two cooperating modules: an **offline pipeline** that ingests data, engineers features, and trains models; and a **live dashboard** that fetches real-time market data, runs inference, and displays actionable trading signals.
+
+### Data
+
+Five years of historical data for five major US equities (AAPL, MSFT, AMZN, TSLA, NVDA), sourced from the SimFin API:
+
+- **Daily stock prices** — open, high, low, close, volume (OHLCV)
+- **Quarterly financial statements** — income statements and balance sheets with point-in-time alignment
+
+### Feature Engineering
+
+The ETL pipeline generates **70+ features** from raw data, organized into four categories:
+
+| Category | Examples |
+|----------|---------|
+| **Trend** | Distance from SMA-20, SMA-50, SMA-200 |
+| **Momentum** | RSI proxy, 1-day log return |
+| **Volatility** | Bollinger Band width, ATR-14 |
+| **Fundamentals** | Return on Assets, Net Margin |
+
+A critical design decision was **anti-leakage alignment**: quarterly financial data is only made available to the model from its public release date, never in advance. This uses point-in-time joins to ensure the model never sees information that wouldn't have been available to a real investor at each historical point.
+
+### Model Architecture
+
+Two independent LightGBM models, each tuned with 30 Optuna Bayesian optimization trials:
+
+| Model | Task | Metric | Output |
+|-------|------|--------|--------|
+| **Classifier** | Binary up/down direction | Precision (minimize false buys) | `prob_up` in [0, 1] |
+| **Regressor** | Next-day log-return magnitude | RMSE | `pred_log_return` |
+
+The classifier is deliberately optimized for **precision over recall** — the system prefers to miss an opportunity rather than act on a wrong signal.
+
+**Signal generation:**
+- `BUY` — probability of up > 0.55
+- `SELL` — probability of up < 0.45
+- `HOLD` — otherwise
+
+**Target price** is computed as: `current_price × exp(pred_log_return)`
+
+## Key Results
+
+<div class="grid grid-cols-2 gap-4 sm:grid-cols-4 not-prose my-8">
+  <MetricCard value="70+" label="Engineered features" />
+  <MetricCard value="5" label="US equities covered" />
+  <MetricCard value="5 yrs" label="Historical data" />
+  <MetricCard value="4" label="Dashboard pages" />
+</div>
+
+The system produces daily trading signals with associated confidence levels and price targets. The backtesting module allows users to simulate historical performance of the system's signals against a buy-and-hold benchmark, with configurable parameters.
+
+## The Dashboard
+
+The live Streamlit application has four pages, each serving a distinct purpose:
+
+| Page | Purpose |
+|------|---------|
+| **Home** | Introduction to the system and objectives |
+| **Market Analysis** | Live trading signals (Buy/Hold/Sell) and price targets for covered stocks |
+| **Trading Strategy** | Backtesting simulator comparing system signals vs. buy-and-hold |
+| **Methodology** | Model performance metrics and feature importance breakdown |
+
+The dashboard fetches fresh market data from the SimFin API on each session and runs the trained models in real-time to generate up-to-date predictions.
+
+## Architecture
+
+```
+SimFin API
+    │
+    ▼
+fetch_data.py  →  data/raw/ (prices, fundamentals)
+    │
+    ▼
+etl.py         →  features.parquet (70+ engineered features)
+    │
+    ▼
+train.py       →  models/ (classifier + regressor + feature list)
+    │
+    ▼
+predict.py  +  SimFin API (live)
+    │
+    ▼
+Streamlit Dashboard (4 pages)
+```
+
+## Challenges
+
+**Preventing data leakage** was the most subtle challenge. Financial datasets have a trap: quarterly reports are published with a delay after the period they cover. Using them without accounting for publication dates would mean the model "knows the future" during training. We implemented strict point-in-time alignment to prevent this.
+
+**Balancing signal precision** in noisy markets required careful optimization. Financial time series are inherently noisy, and not every historical pattern reflects a repeatable signal. By optimizing for precision, the system generates fewer but higher-confidence trading signals.
+
+## Disclaimer
+
+This project is a proof of concept developed for educational and research purposes. The signals generated do not constitute financial advice. Past performance does not guarantee future results.
