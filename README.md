@@ -1,43 +1,22 @@
-# Astro Starter Kit: Minimal
+# Portfolio
 
-```sh
-npm create astro@latest -- --template minimal
+Data science portfolio — [nicolaswilches.github.io/portfolio](https://nicolaswilches.github.io/portfolio)
+
+Built with Astro, Tailwind CSS, and MDX. Warm paper palette with pixel art project icons.
+
+## Local development
+
+```bash
+npm install
+npm run dev       # localhost:4321/portfolio/
+npm run build     # Production build to dist/
 ```
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+Requires Node.js >= 22.
 
-## 🚀 Project Structure
+## Adding a project
 
-Inside of your Astro project, you'll see the following folders and files:
-
-```text
-/
-├── public/
-├── src/
-│   └── pages/
-│       └── index.astro
-└── package.json
-```
-
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
-
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
-
-Any static assets, like images, can be placed in the `public/` directory.
-
-## 🧞 Commands
-
-All commands are run from the root of the project, from a terminal:
-
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
-
-## 👀 Want to learn more?
-
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+1. Create `src/content/projects/my-project.mdx` with frontmatter (see existing files for schema)
+2. Create a pixel art icon in `src/components/icons/`
+3. Add the icon to `iconMap` in `src/pages/index.astro`
+4. Push to `main` — deploys automatically via GitHub Actions

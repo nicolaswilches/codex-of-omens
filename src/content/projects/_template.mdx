@@ -1,0 +1,59 @@
+---
+# Copy this file and rename to your-project-slug.mdx
+# All fields below are validated at build time — the build will fail if required fields are missing.
+
+title: "Project Title"
+tagline: "One-line description of the project."
+date: 2026-01-01                    # Project date (YYYY-MM-DD)
+status: "complete"                  # complete | in-progress | coming-soon
+featured: true                      # Show on homepage
+sortOrder: 1                        # Display order (lower = first)
+heroImage: "/portfolio/embeds/placeholder.svg"  # Path to hero image in public/
+techStack: ["Python", "scikit-learn"]           # Technologies (first 5 shown as tags)
+tags: ["ml", "production"]                      # Category tags
+githubUrl: "https://github.com/nicolaswilches/repo"  # Optional
+liveUrl: "https://example.com"                         # Optional
+# demoEmbed: "/portfolio/embeds/demo.html"             # Optional: embeddable HTML
+# teamSize: 3                                          # Optional
+# duration: "3 months"                                 # Optional
+---
+
+import MetricCard from '../../components/MetricCard.astro';
+import PlotlyEmbed from '../../components/PlotlyEmbed.astro';
+
+## The Problem
+
+Describe the business context. Who cares about this problem and why?
+
+## Approach
+
+### Data
+
+What data did you use? Where did it come from?
+
+### Methodology
+
+What techniques, models, or algorithms did you apply?
+
+## Key Results
+
+<div class="grid grid-cols-2 gap-4 sm:grid-cols-3 not-prose my-8">
+  <MetricCard value="XX%" label="Some metric" />
+  <MetricCard value="Y" label="Another metric" />
+  <MetricCard value="Z" label="Third metric" />
+</div>
+
+Describe the outcomes. What did the model achieve?
+
+{/* Optional: embed an interactive chart */}
+{/* <PlotlyEmbed src="/portfolio/embeds/my-chart.html" title="Chart title" /> */}
+
+## Architecture
+
+```
+Describe the system architecture as ASCII art or text.
+```
+
+## Challenges
+
+What was hard? What did you learn?
