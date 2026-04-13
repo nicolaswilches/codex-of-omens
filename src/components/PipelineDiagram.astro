@@ -1,0 +1,94 @@
+---
+/**
+ * Visual pipeline/flow diagram replacing ASCII art.
+ * Supports linear (vertical) and branching layouts.
+ */
+interface Step {
+  label: string;
+  detail?: string;
+  branches?: { label: string; detail?: string }[];
+}
+
+interface Props {
+  steps: Step[];
+  layout?: 'linear' | 'branching';
+}
+
+const { steps, layout = 'linear' } = Astro.props;
+---
+
+<div class="my-8 not-prose">
+  {layout === 'linear' ? (
+    <div class="flex flex-col items-center gap-0">
+      {steps.map((step, i) => (
+        <>
+          <div class="w-full max-w-xs border border-ink-200 rounded-lg px-4 py-2.5 bg-paper-dark text-center">
+            <span class="text-sm font-medium text-ink-900">{step.label}</span>
+            {step.detail && <span class="block text-xs text-ink-400 mt-0.5">{step.detail}</span>}
+          </div>
+          {i < steps.length - 1 && (
+            <div class="flex flex-col items-center py-1">
+              <div class="w-px h-4 bg-ink-200"></div>
+              <svg class="h-2.5 w-2.5 text-ink-300" viewBox="0 0 10 10" fill="currentColor">
+                <polygon points="5,10 0,2 10,2" />
+              </svg>
+            </div>
+          )}
+        </>
+      ))}
+    </div>
+  ) : (
+    <div class="flex flex-col items-center gap-0">
+      {steps.map((step, i) => (
+        <>
+          {step.branches ? (
+            <>
+              {/* Entry node */}
+              <div class="w-full max-w-xs border border-ink-200 rounded-lg px-4 py-2.5 bg-paper-dark text-center">
+                <span class="text-sm font-medium text-ink-900">{step.label}</span>
+                {step.detail && <span class="block text-xs text-ink-400 mt-0.5">{step.detail}</span>}
+              </div>
+              {/* Connector down to branches */}
+              <div class="flex flex-col items-center py-1">
+                <div class="w-px h-4 bg-ink-200"></div>
+              </div>
+              {/* Branch container */}
+              <div class="w-full grid grid-cols-2 sm:grid-cols-4 gap-2">
+                {step.branches.map((b) => (
+                  <div class="border border-ink-200 rounded-lg px-3 py-2 bg-paper-dark text-center">
+                    <span class="text-xs font-medium text-ink-900">{b.label}</span>
+                    {b.detail && <span class="block text-[11px] text-ink-400 mt-0.5">{b.detail}</span>}
+                  </div>
+                ))}
+              </div>
+              {/* Connector from branches to next */}
+              {i < steps.length - 1 && (
+                <div class="flex flex-col items-center py-1">
+                  <div class="w-px h-4 bg-ink-200"></div>
+                  <svg class="h-2.5 w-2.5 text-ink-300" viewBox="0 0 10 10" fill="currentColor">
+                    <polygon points="5,10 0,2 10,2" />
+                  </svg>
+                </div>
+              )}
+            </>
+          ) : (
+            <>
+              <div class="w-full max-w-xs border border-ink-200 rounded-lg px-4 py-2.5 bg-paper-dark text-center">
+                <span class="text-sm font-medium text-ink-900">{step.label}</span>
+                {step.detail && <span class="block text-xs text-ink-400 mt-0.5">{step.detail}</span>}
+              </div>
+              {i < steps.length - 1 && (
+                <div class="flex flex-col items-center py-1">
+                  <div class="w-px h-4 bg-ink-200"></div>
+                  <svg class="h-2.5 w-2.5 text-ink-300" viewBox="0 0 10 10" fill="currentColor">
+                    <polygon points="5,10 0,2 10,2" />
+                  </svg>
+                </div>
+              )}
+            </>
+          )}
+        </>
+      ))}
+    </div>
+  )}
+</div>

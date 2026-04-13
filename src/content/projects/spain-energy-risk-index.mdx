@@ -13,6 +13,7 @@ liveUrl: "https://spain-energy-risk-index.onrender.com"
 ---
 
 import MetricCard from '../../components/MetricCard.astro';
+import PipelineDiagram from '../../components/PipelineDiagram.astro';
 
 ## The Problem
 
@@ -71,20 +72,16 @@ The model achieves a **56.2% reduction in asymmetric cost** compared to a persis
 
 This isn't a notebook exercise. The model is deployed as a **production FastAPI service** with a complete engineering stack:
 
-```
-Git Push → GitHub Actions CI/CD
-    │
-    ├─ train.yml    → Train on sample data
-    ├─ Lint + Test  → flake8 + pytest
-    ├─ Docker Build → Bake model into image
-    └─ Push to GHCR → ghcr.io tagged with commit SHA
-          │
-          ▼
-    Render.com pulls image → Live API
-          │
-          ▼
-    webapp/index.html → User-facing risk dashboard
-```
+<PipelineDiagram layout="branching" steps={[
+  { label: "Git Push → GitHub Actions", branches: [
+    { label: "train.yml", detail: "Train on sample data" },
+    { label: "Lint + Test", detail: "flake8 + pytest" },
+    { label: "Docker Build", detail: "Bake model into image" },
+    { label: "Push to GHCR", detail: "Tagged with commit SHA" },
+  ]},
+  { label: "Render.com", detail: "Pulls image → Live API" },
+  { label: "Risk Dashboard", detail: "User-facing web app" },
+]} />
 
 **The API** accepts a target date, fetches live data from REE and Open-Meteo weather APIs, runs the trained model, and returns a risk prediction with its category.
 

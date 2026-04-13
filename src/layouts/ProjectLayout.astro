@@ -15,73 +15,152 @@ interface Props {
   liveUrl?: string;
   readingTime: number;
   headings: { depth: number; slug: string; text: string }[];
+  prevProject?: { id: string; title: string } | null;
+  nextProject?: { id: string; title: string } | null;
 }
 
 const base = import.meta.env.BASE_URL;
 const {
   title, tagline, date, updatedDate, status,
   techStack, tags, githubUrl, liveUrl, readingTime, headings,
+  prevProject, nextProject,
 } = Astro.props;
 
 const dateStr = date.toLocaleDateString('en-US', { year: 'numeric', month: 'long' });
 const tocHeadings = headings.filter((h) => h.depth === 2);
+const showToc = tocHeadings.length > 1;
 ---
 
 <BaseLayout title={`${title} — Nicolás Higuera Wilches`} description={tagline}>
-  <div class="mx-auto max-w-[40em] px-6">
-    <!-- Back -->
-    <a href={`${base}/`} class="inline-flex items-center gap-1 text-sm text-ink-400 hover:text-ink-900 transition-colors mb-8">
-      <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
-      </svg>
-      Projects
-    </a>
+  <!-- Reading progress bar -->
+  <div id="reading-progress" class="fixed top-0 left-0 h-0.5 bg-forest z-50" style="width: 0%"></div>
 
-    <!-- Header -->
-    <header class="pb-8">
-      <h1 class="text-2xl font-semibold text-ink-900 sm:text-3xl">{title}</h1>
-      <p class="mt-3 text-ink-500 leading-relaxed">{tagline}</p>
-
-      <!-- Meta -->
-      <div class="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-ink-400">
-        <span>{dateStr}</span>
-        <span>·</span>
-        <span>{readingTime} min read</span>
-      </div>
-
-      <!-- Actions -->
-      {(liveUrl || githubUrl) && (
-        <div class="mt-5 flex flex-wrap gap-3">
-          {liveUrl && <DemoButton href={liveUrl} label="Live app" variant="primary" />}
-          {githubUrl && <DemoButton href={githubUrl} label="GitHub" variant="secondary" />}
-        </div>
-      )}
-
-      <!-- Tech tags -->
-      <div class="mt-5 flex flex-wrap gap-1.5">
-        {techStack.map((tech) => (
-          <span class="text-xs text-ink-500 border border-ink-150 rounded-full px-2 py-0.5">
-            {tech}
-          </span>
-        ))}
-      </div>
-    </header>
-
-    <div class="border-t border-ink-100" />
-
-    <!-- Content -->
-    <article class="prose max-w-none py-10">
-      <slot />
-    </article>
-
-    <!-- Bottom nav -->
-    <div class="border-t border-ink-100 pt-8 pb-4">
-      <a href={`${base}/`} class="inline-flex items-center gap-1 text-sm text-ink-400 hover:text-ink-900 transition-colors">
+  <div class:list={[
+    'mx-auto px-6',
+    showToc ? 'max-w-[56em] lg:grid lg:grid-cols-[minmax(0,40em)_1fr] lg:gap-10' : 'max-w-[40em]',
+  ]}>
+    <div>
+      <!-- Back -->
+      <a href={`${base}/`} class="inline-flex items-center gap-1 text-sm text-ink-400 hover:text-ink-900 transition-colors mb-8">
         <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
           <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
         </svg>
-        All projects
+        Projects
       </a>
+
+      <!-- Header -->
+      <header class="pb-8">
+        <h1 class="text-2xl font-semibold text-ink-900 sm:text-3xl">{title}</h1>
+        <p class="mt-3 text-ink-500 leading-relaxed">{tagline}</p>
+
+        <!-- Meta -->
+        <div class="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-ink-400">
+          <span>{dateStr}</span>
+          <span>&middot;</span>
+          <span>{readingTime} min read</span>
+        </div>
+
+        <!-- Actions -->
+        {(liveUrl || githubUrl) && (
+          <div class="mt-5 flex flex-wrap gap-3">
+            {liveUrl && <DemoButton href={liveUrl} label="Live app" variant="primary" />}
+            {githubUrl && <DemoButton href={githubUrl} label="GitHub" variant="secondary" />}
+          </div>
+        )}
+
+        <!-- Tech tags -->
+        <div class="mt-5 flex flex-wrap gap-1.5">
+          {techStack.map((tech) => (
+            <span class="text-xs text-ink-500 border border-ink-150 rounded-full px-2 py-0.5">
+              {tech}
+            </span>
+          ))}
+        </div>
+      </header>
+
+      <div class="border-t border-ink-100" />
+
+      <!-- Mobile TOC -->
+      {showToc && (
+        <details class="lg:hidden mt-6 border border-ink-100 rounded-lg px-4 py-3">
+          <summary class="text-sm font-medium text-ink-500 cursor-pointer select-none">Table of contents</summary>
+          <ul class="mt-3 space-y-1.5">
+            {tocHeadings.map((h) => (
+              <li><a href={`#${h.slug}`} class="text-sm text-ink-400 hover:text-ink-900 transition-colors">{h.text}</a></li>
+            ))}
+          </ul>
+        </details>
+      )}
+
+      <!-- Content -->
+      <article class="prose max-w-none py-10">
+        <slot />
+      </article>
+
+      <!-- Prev/Next navigation -->
+      <div class="border-t border-ink-100 pt-8 pb-4">
+        <div class="flex justify-between items-start gap-4">
+          {prevProject ? (
+            <a href={`${base}/projects/${prevProject.id}/`} class="group text-left">
+              <span class="text-xs text-ink-300 block">Previous</span>
+              <span class="text-sm text-ink-400 group-hover:text-ink-900 transition-colors flex items-center gap-1">
+                <svg class="h-3 w-3 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" /></svg>
+                {prevProject.title}
+              </span>
+            </a>
+          ) : <div />}
+          {nextProject ? (
+            <a href={`${base}/projects/${nextProject.id}/`} class="group text-right ml-auto">
+              <span class="text-xs text-ink-300 block">Next</span>
+              <span class="text-sm text-ink-400 group-hover:text-ink-900 transition-colors flex items-center gap-1">
+                {nextProject.title}
+                <svg class="h-3 w-3 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
+              </span>
+            </a>
+          ) : <div />}
+        </div>
+        <a href={`${base}/`} class="inline-flex items-center gap-1 text-sm text-ink-400 hover:text-ink-900 transition-colors mt-6">
+          <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+          </svg>
+          All projects
+        </a>
+      </div>
     </div>
+
+    <!-- Desktop TOC sidebar -->
+    {showToc && (
+      <aside class="hidden lg:block">
+        <nav class="sticky top-8 pt-[7.5rem]">
+          <p class="text-xs font-medium text-ink-400 uppercase tracking-wider mb-3">On this page</p>
+          <ul class="border-l border-ink-100 space-y-1">
+            {tocHeadings.map((h) => (
+              <li>
+                <a href={`#${h.slug}`} class="toc-link block pl-3 py-1 text-sm text-ink-400 hover:text-ink-900 transition-colors border-l-2 border-transparent -ml-px hover:border-forest">
+                  {h.text}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      </aside>
+    )}
   </div>
+
+  <!-- Progress bar script -->
+  <script is:inline>
+    function initProgress() {
+      var bar = document.getElementById('reading-progress');
+      if (!bar) return;
+      function update() {
+        var scrollTop = window.scrollY;
+        var docHeight = document.documentElement.scrollHeight - window.innerHeight;
+        bar.style.width = docHeight > 0 ? (scrollTop / docHeight * 100) + '%' : '0%';
+      }
+      window.addEventListener('scroll', update, { passive: true });
+      update();
+    }
+    initProgress();
+    document.addEventListener('astro:after-swap', initProgress);
+  </script>
 </BaseLayout>

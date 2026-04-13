@@ -13,6 +13,7 @@ liveUrl: "https://nicolaswilches-daily-trading-system-main-2ez8iq.streamlit.app/
 ---
 
 import MetricCard from '../../components/MetricCard.astro';
+import PipelineDiagram from '../../components/PipelineDiagram.astro';
 
 ## The Problem
 
@@ -88,24 +89,14 @@ The dashboard fetches fresh market data from the SimFin API on each session and 
 
 ## Architecture
 
-```
-SimFin API
-    │
-    ▼
-fetch_data.py  →  data/raw/ (prices, fundamentals)
-    │
-    ▼
-etl.py         →  features.parquet (70+ engineered features)
-    │
-    ▼
-train.py       →  models/ (classifier + regressor + feature list)
-    │
-    ▼
-predict.py  +  SimFin API (live)
-    │
-    ▼
-Streamlit Dashboard (4 pages)
-```
+<PipelineDiagram steps={[
+  { label: "SimFin API", detail: "Market data source" },
+  { label: "fetch_data.py", detail: "data/raw/ (prices, fundamentals)" },
+  { label: "etl.py", detail: "features.parquet (70+ engineered features)" },
+  { label: "train.py", detail: "models/ (classifier + regressor + feature list)" },
+  { label: "predict.py + SimFin API", detail: "Live predictions" },
+  { label: "Streamlit Dashboard", detail: "4 pages" },
+]} />
 
 ## Challenges
 

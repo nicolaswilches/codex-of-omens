@@ -138,8 +138,6 @@
     margin-top: 1.5rem;
     margin-bottom: 1.5rem;
     padding: 1rem 1.25rem;
-    background-color: var(--color-ink-900);
-    color: var(--color-ink-100);
     border-radius: 6px;
     overflow-x: auto;
     font-size: 0.85em;
@@ -198,4 +196,88 @@
   .prose > :first-child {
     margin-top: 0;
   }
+}
+
+/* Dark mode overrides */
+@layer base {
+  @media (prefers-color-scheme: dark) {
+    html:not([data-theme="light"]) {
+      --color-paper: #1C1B1A;
+      --color-paper-dark: #252422;
+      --color-surface: #232220;
+
+      --color-ink-900: #F2F0E5;
+      --color-ink-800: #E6E4D9;
+      --color-ink-700: #DAD8CE;
+      --color-ink-600: #CECDC3;
+      --color-ink-500: #B7B5AC;
+      --color-ink-400: #878580;
+      --color-ink-300: #6F6E69;
+      --color-ink-200: #575653;
+      --color-ink-150: #403E3C;
+      --color-ink-100: #333231;
+      --color-ink-50: #282726;
+
+      --color-forest: #6B9E7A;
+      --color-forest-light: #4A7C59;
+      --color-earth: #AD8301;
+      --color-earth-light: #8B6914;
+      --color-clay: #DA702C;
+      --color-clay-light: #BC5215;
+      --color-water: #3AA99F;
+      --color-water-light: #24837B;
+      --color-berry: #D14D41;
+    }
+  }
+
+  html[data-theme="dark"] {
+    --color-paper: #1C1B1A;
+    --color-paper-dark: #252422;
+    --color-surface: #232220;
+
+    --color-ink-900: #F2F0E5;
+    --color-ink-800: #E6E4D9;
+    --color-ink-700: #DAD8CE;
+    --color-ink-600: #CECDC3;
+    --color-ink-500: #B7B5AC;
+    --color-ink-400: #878580;
+    --color-ink-300: #6F6E69;
+    --color-ink-200: #575653;
+    --color-ink-150: #403E3C;
+    --color-ink-100: #333231;
+    --color-ink-50: #282726;
+
+    --color-forest: #6B9E7A;
+    --color-forest-light: #4A7C59;
+    --color-earth: #AD8301;
+    --color-earth-light: #8B6914;
+    --color-clay: #DA702C;
+    --color-clay-light: #BC5215;
+    --color-water: #3AA99F;
+    --color-water-light: #24837B;
+    --color-berry: #D14D41;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    html:not([data-theme="light"]) ::selection {
+      background-color: var(--color-ink-200);
+    }
+  }
+  html[data-theme="dark"] ::selection {
+    background-color: var(--color-ink-200);
+  }
+}
+
+/* Shiki dual theme dark mode swap */
+@media (prefers-color-scheme: dark) {
+  html:not([data-theme="light"]) .shiki,
+  html:not([data-theme="light"]) .shiki span {
+    color: var(--shiki-dark) !important;
+    background-color: var(--shiki-dark-bg) !important;
+  }
+}
+html[data-theme="dark"] .shiki,
+html[data-theme="dark"] .shiki span {
+  color: var(--shiki-dark) !important;
+  background-color: var(--shiki-dark-bg) !important;
 }
