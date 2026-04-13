@@ -13,15 +13,14 @@ interface Props {
   tags: string[];
   githubUrl?: string;
   liveUrl?: string;
-  teamSize?: number;
-  duration?: string;
+  readingTime: number;
   headings: { depth: number; slug: string; text: string }[];
 }
 
 const base = import.meta.env.BASE_URL;
 const {
   title, tagline, date, updatedDate, status,
-  techStack, tags, githubUrl, liveUrl, teamSize, duration, headings,
+  techStack, tags, githubUrl, liveUrl, readingTime, headings,
 } = Astro.props;
 
 const dateStr = date.toLocaleDateString('en-US', { year: 'numeric', month: 'long' });
@@ -46,15 +45,15 @@ const tocHeadings = headings.filter((h) => h.depth === 2);
       <!-- Meta -->
       <div class="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-ink-400">
         <span>{dateStr}</span>
-        {teamSize && <span>{teamSize === 1 ? 'Solo' : `Team of ${teamSize}`}</span>}
-        {duration && <span>{duration}</span>}
+        <span>·</span>
+        <span>{readingTime} min read</span>
       </div>
 
       <!-- Actions -->
       {(liveUrl || githubUrl) && (
         <div class="mt-5 flex flex-wrap gap-3">
           {liveUrl && <DemoButton href={liveUrl} label="Live app" variant="primary" />}
-          {githubUrl && <DemoButton href={githubUrl} label="Source" variant="secondary" />}
+          {githubUrl && <DemoButton href={githubUrl} label="GitHub" variant="secondary" />}
         </div>
       )}
 
