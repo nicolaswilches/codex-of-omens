@@ -1,19 +1,10 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import ProjectRow from '../components/ProjectRow.astro';
-import TradingIcon from '../components/icons/TradingIcon.astro';
-import EnergyIcon from '../components/icons/EnergyIcon.astro';
-import EVIcon from '../components/icons/EVIcon.astro';
 import { getCollection } from 'astro:content';
 
 const projects = (await getCollection('projects')).sort((a, b) => a.data.sortOrder - b.data.sortOrder);
 const base = import.meta.env.BASE_URL;
-
-const iconMap: Record<string, any> = {
-  'daily-trading-system': TradingIcon,
-  'spain-energy-risk-index': EnergyIcon,
-  'iberdrola-ev-network': EVIcon,
-};
 ---
 
 <BaseLayout title="Nicolás Higuera Wilches — Data Science Portfolio">
@@ -38,7 +29,7 @@ const iconMap: Record<string, any> = {
             status={project.data.status}
             date={project.data.date}
             href={`${base}/projects/${project.id}/`}
-            icon={iconMap[project.id] || TradingIcon}
+
           />
         ))}
       </div>
