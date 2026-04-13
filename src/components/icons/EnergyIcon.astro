@@ -1,36 +1,139 @@
 ---
 /**
- * Pixel art lightning bolt / power grid icon — warm yellows and earth tones
- * 16x16 grid
+ * Pixel art electrical transmission tower (pylon) icon
+ * 48x48 grid, detailed pixel art with metallic tones and power lines
  */
 interface Props {
   size?: number;
 }
-const { size = 48 } = Astro.props;
+const { size = 144 } = Astro.props;
 ---
 
-<svg width={size} height={size} viewBox="0 0 16 16" shape-rendering="crispEdges" xmlns="http://www.w3.org/2000/svg">
-  <!-- Background -->
-  <rect width="16" height="16" fill="#F2F0E5" rx="2" />
+<svg width={size} height={size} viewBox="0 0 48 48" shape-rendering="crispEdges" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background — sky gradient feel -->
+  <rect width="48" height="48" fill="#F2F0E5" rx="4" />
+  <!-- Subtle sky tint at top -->
+  <rect x="0" y="0" width="48" height="8" fill="#EBF0E8" rx="4" />
 
-  <!-- Lightning bolt - earth/amber tones -->
-  <rect x="8" y="1" width="2" height="1" fill="#AD8301" />
-  <rect x="7" y="2" width="2" height="1" fill="#AD8301" />
-  <rect x="6" y="3" width="2" height="1" fill="#AD8301" />
-  <rect x="5" y="4" width="2" height="1" fill="#AD8301" />
-  <rect x="4" y="5" width="2" height="1" fill="#8B6914" />
-  <rect x="4" y="6" width="5" height="1" fill="#8B6914" />
-  <rect x="7" y="7" width="2" height="1" fill="#AD8301" />
-  <rect x="7" y="8" width="2" height="1" fill="#AD8301" />
-  <rect x="6" y="9" width="2" height="1" fill="#DA702C" />
-  <rect x="6" y="10" width="5" height="1" fill="#DA702C" />
-  <rect x="9" y="11" width="2" height="1" fill="#BC5215" />
-  <rect x="8" y="12" width="2" height="1" fill="#BC5215" />
-  <rect x="7" y="13" width="2" height="1" fill="#BC5215" />
-  <rect x="6" y="14" width="2" height="1" fill="#BC5215" />
+  <!-- === TRANSMISSION TOWER === -->
 
-  <!-- Small spark pixels -->
-  <rect x="3" y="3" width="1" height="1" fill="#E6E4D9" />
-  <rect x="12" y="8" width="1" height="1" fill="#E6E4D9" />
-  <rect x="2" y="7" width="1" height="1" fill="#DAD8CE" />
+  <!-- Top finial / antenna -->
+  <rect x="23" y="3" width="2" height="2" fill="#6B6B6B" />
+  <rect x="23" y="5" width="2" height="1" fill="#888888" />
+
+  <!-- Top cross arm (insulators) -->
+  <rect x="10" y="6" width="28" height="1" fill="#7A7A7A" />
+  <rect x="10" y="7" width="28" height="1" fill="#6B6B6B" />
+  <!-- Insulators on top arm -->
+  <rect x="10" y="8" width="2" height="2" fill="#24837B" />
+  <rect x="13" y="8" width="2" height="2" fill="#24837B" />
+  <rect x="33" y="8" width="2" height="2" fill="#24837B" />
+  <rect x="36" y="8" width="2" height="2" fill="#24837B" />
+
+  <!-- Upper tower body — tapers inward -->
+  <rect x="19" y="8" width="2" height="1" fill="#888888" />
+  <rect x="27" y="8" width="2" height="1" fill="#6B6B6B" />
+  <rect x="19" y="9" width="2" height="1" fill="#7A7A7A" />
+  <rect x="27" y="9" width="2" height="1" fill="#6B6B6B" />
+  <rect x="20" y="10" width="2" height="1" fill="#888888" />
+  <rect x="26" y="10" width="2" height="1" fill="#6B6B6B" />
+  <rect x="20" y="11" width="2" height="1" fill="#7A7A7A" />
+  <rect x="26" y="11" width="2" height="1" fill="#6B6B6B" />
+
+  <!-- Cross brace 1 -->
+  <rect x="20" y="12" width="8" height="1" fill="#7A7A7A" />
+  <rect x="21" y="13" width="1" height="1" fill="#888888" />
+  <rect x="26" y="13" width="1" height="1" fill="#6B6B6B" />
+  <rect x="22" y="14" width="1" height="1" fill="#888888" />
+  <rect x="25" y="14" width="1" height="1" fill="#6B6B6B" />
+  <rect x="23" y="15" width="2" height="1" fill="#7A7A7A" />
+  <rect x="22" y="16" width="1" height="1" fill="#6B6B6B" />
+  <rect x="25" y="16" width="1" height="1" fill="#888888" />
+  <rect x="21" y="17" width="1" height="1" fill="#6B6B6B" />
+  <rect x="26" y="17" width="1" height="1" fill="#888888" />
+
+  <!-- Middle cross arm -->
+  <rect x="13" y="18" width="22" height="1" fill="#7A7A7A" />
+  <rect x="13" y="19" width="22" height="1" fill="#6B6B6B" />
+  <!-- Insulators on middle arm -->
+  <rect x="13" y="20" width="2" height="2" fill="#24837B" />
+  <rect x="33" y="20" width="2" height="2" fill="#24837B" />
+
+  <!-- Middle tower legs -->
+  <rect x="20" y="20" width="2" height="1" fill="#888888" />
+  <rect x="26" y="20" width="2" height="1" fill="#6B6B6B" />
+  <rect x="20" y="21" width="2" height="1" fill="#7A7A7A" />
+  <rect x="26" y="21" width="2" height="1" fill="#6B6B6B" />
+
+  <!-- Cross brace 2 -->
+  <rect x="20" y="22" width="8" height="1" fill="#7A7A7A" />
+  <rect x="21" y="23" width="1" height="1" fill="#888888" />
+  <rect x="26" y="23" width="1" height="1" fill="#6B6B6B" />
+  <rect x="22" y="24" width="1" height="1" fill="#888888" />
+  <rect x="25" y="24" width="1" height="1" fill="#6B6B6B" />
+  <rect x="23" y="25" width="2" height="1" fill="#7A7A7A" />
+  <rect x="22" y="26" width="1" height="1" fill="#6B6B6B" />
+  <rect x="25" y="26" width="1" height="1" fill="#888888" />
+  <rect x="21" y="27" width="1" height="1" fill="#6B6B6B" />
+  <rect x="26" y="27" width="1" height="1" fill="#888888" />
+
+  <!-- Lower tower — legs spread wider -->
+  <rect x="19" y="28" width="2" height="1" fill="#888888" />
+  <rect x="27" y="28" width="2" height="1" fill="#6B6B6B" />
+  <rect x="18" y="29" width="2" height="1" fill="#7A7A7A" />
+  <rect x="28" y="29" width="2" height="1" fill="#6B6B6B" />
+  <rect x="18" y="30" width="2" height="1" fill="#888888" />
+  <rect x="28" y="30" width="2" height="1" fill="#6B6B6B" />
+  <rect x="17" y="31" width="2" height="1" fill="#7A7A7A" />
+  <rect x="29" y="31" width="2" height="1" fill="#6B6B6B" />
+
+  <!-- Cross brace 3 (lower) -->
+  <rect x="17" y="32" width="14" height="1" fill="#7A7A7A" />
+  <rect x="18" y="33" width="1" height="1" fill="#888888" />
+  <rect x="29" y="33" width="1" height="1" fill="#6B6B6B" />
+  <rect x="19" y="34" width="1" height="1" fill="#888888" />
+  <rect x="28" y="34" width="1" height="1" fill="#6B6B6B" />
+  <rect x="20" y="35" width="1" height="1" fill="#888888" />
+  <rect x="27" y="35" width="1" height="1" fill="#6B6B6B" />
+  <rect x="23" y="35" width="2" height="1" fill="#7A7A7A" />
+  <rect x="21" y="36" width="1" height="1" fill="#6B6B6B" />
+  <rect x="26" y="36" width="1" height="1" fill="#888888" />
+  <rect x="18" y="37" width="1" height="1" fill="#6B6B6B" />
+  <rect x="29" y="37" width="1" height="1" fill="#888888" />
+
+  <!-- Bottom legs — widest spread -->
+  <rect x="16" y="37" width="2" height="1" fill="#888888" />
+  <rect x="30" y="37" width="2" height="1" fill="#6B6B6B" />
+  <rect x="15" y="38" width="2" height="1" fill="#7A7A7A" />
+  <rect x="31" y="38" width="2" height="1" fill="#6B6B6B" />
+  <rect x="14" y="39" width="2" height="1" fill="#888888" />
+  <rect x="32" y="39" width="2" height="1" fill="#6B6B6B" />
+  <rect x="13" y="40" width="3" height="1" fill="#7A7A7A" />
+  <rect x="32" y="40" width="3" height="1" fill="#6B6B6B" />
+
+  <!-- Foundation / base -->
+  <rect x="12" y="41" width="4" height="2" fill="#6B6B6B" />
+  <rect x="32" y="41" width="4" height="2" fill="#6B6B6B" />
+  <rect x="11" y="43" width="6" height="1" fill="#555555" />
+  <rect x="31" y="43" width="6" height="1" fill="#555555" />
+
+  <!-- Ground line -->
+  <rect x="4" y="44" width="40" height="1" fill="#DAD8CE" />
+
+  <!-- === POWER LINES === -->
+  <!-- Left power lines -->
+  <rect x="2" y="6" width="8" height="1" fill="#9A9A9A" />
+  <rect x="2" y="18" width="11" height="1" fill="#9A9A9A" />
+  <!-- Right power lines -->
+  <rect x="38" y="6" width="8" height="1" fill="#9A9A9A" />
+  <rect x="35" y="18" width="11" height="1" fill="#9A9A9A" />
+  <!-- Line sag hints -->
+  <rect x="3" y="7" width="1" height="1" fill="#ABABAB" />
+  <rect x="44" y="7" width="1" height="1" fill="#ABABAB" />
+
+  <!-- === SPARK ACCENTS === -->
+  <rect x="11" y="9" width="1" height="1" fill="#AD8301" />
+  <rect x="36" y="9" width="1" height="1" fill="#AD8301" />
+  <rect x="14" y="21" width="1" height="1" fill="#AD8301" />
+  <rect x="34" y="21" width="1" height="1" fill="#AD8301" />
 </svg>

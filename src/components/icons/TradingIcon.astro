@@ -1,37 +1,120 @@
 ---
 /**
- * Pixel art candlestick chart icon — warm greens and clay tones
- * 16x16 grid, each "pixel" is a 2x2 rect for crispness
+ * Pixel art dual arrows icon — green up arrow, red down arrow
+ * 48x48 grid, detailed pixel art with shading and depth
  */
 interface Props {
   size?: number;
 }
-const { size = 48 } = Astro.props;
-const s = size / 16; // scale factor
+const { size = 144 } = Astro.props;
 ---
 
-<svg width={size} height={size} viewBox="0 0 16 16" shape-rendering="crispEdges" xmlns="http://www.w3.org/2000/svg">
+<svg width={size} height={size} viewBox="0 0 48 48" shape-rendering="crispEdges" xmlns="http://www.w3.org/2000/svg">
   <!-- Background -->
-  <rect width="16" height="16" fill="#F2F0E5" rx="2" />
+  <rect width="48" height="48" fill="#F2F0E5" rx="4" />
 
-  <!-- Grid lines (subtle) -->
-  <rect x="2" y="13" width="12" height="1" fill="#DAD8CE" />
-  <rect x="2" y="10" width="12" height="1" fill="#E6E4D9" />
-  <rect x="2" y="7" width="12" height="1" fill="#E6E4D9" />
+  <!-- === GREEN UP ARROW (left side) === -->
 
-  <!-- Candle 1 - green (up) -->
-  <rect x="3" y="5" width="1" height="7" fill="#4A7C59" />
-  <rect x="2" y="6" width="3" height="4" fill="#4A7C59" />
+  <!-- Arrow tip -->
+  <rect x="12" y="6" width="2" height="1" fill="#3D6B4A" />
+  <rect x="11" y="7" width="4" height="1" fill="#3D6B4A" />
+  <rect x="10" y="8" width="6" height="1" fill="#4A7C59" />
+  <rect x="9" y="9" width="8" height="1" fill="#4A7C59" />
+  <rect x="8" y="10" width="10" height="1" fill="#4A7C59" />
+  <rect x="7" y="11" width="12" height="1" fill="#4A7C59" />
+  <rect x="6" y="12" width="14" height="1" fill="#5A8E68" />
+  <rect x="5" y="13" width="16" height="1" fill="#5A8E68" />
 
-  <!-- Candle 2 - red (down) -->
-  <rect x="6" y="3" width="1" height="8" fill="#BC5215" />
-  <rect x="5" y="4" width="3" height="5" fill="#BC5215" />
+  <!-- Arrow tip highlight (left edge) -->
+  <rect x="5" y="13" width="1" height="1" fill="#6B9E7A" />
+  <rect x="6" y="12" width="1" height="1" fill="#6B9E7A" />
+  <rect x="7" y="11" width="1" height="1" fill="#6B9E7A" />
+  <rect x="8" y="10" width="1" height="1" fill="#6B9E7A" />
+  <rect x="9" y="9" width="1" height="1" fill="#6B9E7A" />
+  <rect x="10" y="8" width="1" height="1" fill="#6B9E7A" />
+  <rect x="11" y="7" width="1" height="1" fill="#6B9E7A" />
 
-  <!-- Candle 3 - green (up) -->
-  <rect x="9" y="2" width="1" height="9" fill="#4A7C59" />
-  <rect x="8" y="4" width="3" height="5" fill="#6B9E7A" />
+  <!-- Arrow tip shadow (right edge) -->
+  <rect x="20" y="13" width="1" height="1" fill="#3D6B4A" />
+  <rect x="19" y="12" width="1" height="1" fill="#3D6B4A" />
+  <rect x="18" y="11" width="1" height="1" fill="#3D6B4A" />
+  <rect x="17" y="10" width="1" height="1" fill="#3D6B4A" />
+  <rect x="16" y="9" width="1" height="1" fill="#3D6B4A" />
 
-  <!-- Candle 4 - green (up, tall) -->
-  <rect x="12" y="1" width="1" height="10" fill="#4A7C59" />
-  <rect x="11" y="3" width="3" height="6" fill="#4A7C59" />
+  <!-- Arrow shaft -->
+  <rect x="10" y="14" width="6" height="2" fill="#4A7C59" />
+  <rect x="10" y="16" width="6" height="2" fill="#4A7C59" />
+  <rect x="10" y="18" width="6" height="2" fill="#5A8E68" />
+  <rect x="10" y="20" width="6" height="2" fill="#5A8E68" />
+  <rect x="10" y="22" width="6" height="2" fill="#4A7C59" />
+  <rect x="10" y="24" width="6" height="2" fill="#4A7C59" />
+  <rect x="10" y="26" width="6" height="2" fill="#5A8E68" />
+  <rect x="10" y="28" width="6" height="2" fill="#5A8E68" />
+  <rect x="10" y="30" width="6" height="2" fill="#4A7C59" />
+  <rect x="10" y="32" width="6" height="2" fill="#4A7C59" />
+  <rect x="10" y="34" width="6" height="2" fill="#5A8E68" />
+  <rect x="10" y="36" width="6" height="2" fill="#5A8E68" />
+  <rect x="10" y="38" width="6" height="2" fill="#4A7C59" />
+  <rect x="10" y="40" width="6" height="2" fill="#4A7C59" />
+
+  <!-- Shaft highlight (left edge) -->
+  <rect x="10" y="14" width="1" height="28" fill="#6B9E7A" />
+
+  <!-- Shaft shadow (right edge) -->
+  <rect x="15" y="14" width="1" height="28" fill="#3D6B4A" />
+
+  <!-- === RED DOWN ARROW (right side) === -->
+
+  <!-- Arrow shaft -->
+  <rect x="32" y="6" width="6" height="2" fill="#BC5215" />
+  <rect x="32" y="8" width="6" height="2" fill="#BC5215" />
+  <rect x="32" y="10" width="6" height="2" fill="#D4621E" />
+  <rect x="32" y="12" width="6" height="2" fill="#D4621E" />
+  <rect x="32" y="14" width="6" height="2" fill="#BC5215" />
+  <rect x="32" y="16" width="6" height="2" fill="#BC5215" />
+  <rect x="32" y="18" width="6" height="2" fill="#D4621E" />
+  <rect x="32" y="20" width="6" height="2" fill="#D4621E" />
+  <rect x="32" y="22" width="6" height="2" fill="#BC5215" />
+  <rect x="32" y="24" width="6" height="2" fill="#BC5215" />
+  <rect x="32" y="26" width="6" height="2" fill="#D4621E" />
+  <rect x="32" y="28" width="6" height="2" fill="#D4621E" />
+  <rect x="32" y="30" width="6" height="2" fill="#BC5215" />
+  <rect x="32" y="32" width="6" height="2" fill="#BC5215" />
+
+  <!-- Shaft highlight (left edge) -->
+  <rect x="32" y="6" width="1" height="28" fill="#DA702C" />
+
+  <!-- Shaft shadow (right edge) -->
+  <rect x="37" y="6" width="1" height="28" fill="#943F0F" />
+
+  <!-- Arrow tip -->
+  <rect x="27" y="34" width="16" height="1" fill="#D4621E" />
+  <rect x="28" y="35" width="14" height="1" fill="#BC5215" />
+  <rect x="29" y="36" width="12" height="1" fill="#BC5215" />
+  <rect x="30" y="37" width="10" height="1" fill="#BC5215" />
+  <rect x="31" y="38" width="8" height="1" fill="#BC5215" />
+  <rect x="32" y="39" width="6" height="1" fill="#A84812" />
+  <rect x="33" y="40" width="4" height="1" fill="#A84812" />
+  <rect x="34" y="41" width="2" height="1" fill="#943F0F" />
+
+  <!-- Arrow tip highlight (left edge) -->
+  <rect x="27" y="34" width="1" height="1" fill="#DA702C" />
+  <rect x="28" y="35" width="1" height="1" fill="#DA702C" />
+  <rect x="29" y="36" width="1" height="1" fill="#DA702C" />
+  <rect x="30" y="37" width="1" height="1" fill="#DA702C" />
+  <rect x="31" y="38" width="1" height="1" fill="#DA702C" />
+
+  <!-- Arrow tip shadow (right edge) -->
+  <rect x="42" y="34" width="1" height="1" fill="#943F0F" />
+  <rect x="41" y="35" width="1" height="1" fill="#943F0F" />
+  <rect x="40" y="36" width="1" height="1" fill="#943F0F" />
+  <rect x="39" y="37" width="1" height="1" fill="#943F0F" />
+  <rect x="38" y="38" width="1" height="1" fill="#943F0F" />
+
+  <!-- Subtle grid dots for texture -->
+  <rect x="3" y="3" width="1" height="1" fill="#E6E4D9" />
+  <rect x="45" y="3" width="1" height="1" fill="#E6E4D9" />
+  <rect x="3" y="44" width="1" height="1" fill="#E6E4D9" />
+  <rect x="45" y="44" width="1" height="1" fill="#E6E4D9" />
+  <rect x="24" y="24" width="1" height="1" fill="#DAD8CE" />
 </svg>
