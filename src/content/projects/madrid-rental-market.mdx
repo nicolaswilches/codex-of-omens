@@ -1,0 +1,120 @@
+---
+title: "Madrid Rental Market Analysis"
+tagline: "A two-phase ML pipeline that segments Madrid's rental market with K-Means clustering and builds district-aware pricing models with linear regression."
+date: 2026-02-28
+status: "complete"
+featured: true
+sortOrder: 4
+heroImage: ""
+techStack: ["Python", "scikit-learn", "statsmodels", "Plotly", "pandas", "NumPy"]
+tags: ["ml", "clustering", "regression"]
+---
+
+import MetricCard from '../../components/MetricCard.astro';
+
+## The Problem
+
+Madrid's rental market is not a single market. It is a collection of structurally distinct sub-markets where identical square meters command wildly different rents depending on district, floor level, and building type. A blended pricing model conflates these segments and systematically misprices both luxury and budget properties.
+
+This project answers two questions for every listing: **which market segment does it belong to?** and **what should it rent for?** Phase 1 discovers the market structure through unsupervised clustering. Phase 2 builds a segment-specific pricing model that captures how location, size, and amenities interact differently across neighborhoods.
+
+## Data
+
+2,089 rental listings from Idealista.com across Madrid, with 15 variables covering structural attributes (square meters, bedrooms, floor), amenities (elevator, exterior, penthouse, cottage, duplex, semi-detached), location (district), and the target variable (monthly rent in euros).
+
+Data cleaning addressed five variables with missing values, three with extreme values, and one data-entry error (a floor value of 43,039). Outliers were capped using the IQR method, and missing values were imputed using contextual medians based on district and area to preserve neighborhood-specific building patterns.
+
+## Phase 1: Clustering Segmentation
+
+### Variable Selection
+
+Seven candidate variables were evaluated. Rent and district were excluded from clustering: rent is the regression target, and district would distort segmentation toward pricing results. Multicollinearity screening revealed a strong correlation between bedrooms and square meters (r = 0.755, VIF ≈ 9), so only one could be kept.
+
+Two combinations were tested across 12 scenarios: Bedrooms + Floor and Sq.Mt + Floor. Bedrooms + Floor was selected for two reasons: it delivered a 9.7% higher silhouette score (0.4552 vs. 0.4053), and it mirrors how tenants actually search for apartments.
+
+Binary amenities (elevator, exterior, penthouse, cottage) were excluded from clustering because they produced "dominated clusters" where 99%+ of one group shared a single feature. Instead, amenities were used as profiling variables after segmentation.
+
+### K Selection
+
+K was evaluated from 2 to 7 using inertia, silhouette, Calinski-Harabasz, and Davies-Bouldin metrics. K = 3 delivered the highest silhouette (0.460), but it merges the Large High-Rise Executive and Large Low-Rise Family segments. K = 4 (silhouette 0.455) preserves the structural distinction between these two property types, and the 0.005 silhouette trade-off is commercially justified.
+
+### The Four Segments
+
+The market follows a 2x2 matrix defined by unit size (compact ≤ 2 beds vs. large ≥ 3 beds) and floor level (low-rise ≤ 4 vs. high-rise ≥ 5):
+
+| Cluster | Profile | n (%) | Median Rent | €/m² |
+|---------|---------|-------|-------------|------|
+| **C0** | Large High-Rise Executive | 229 (11.0%) | €2,400 | €15.0 |
+| **C1** | Compact Traditional | 903 (43.2%) | €1,100 | €16.2 |
+| **C2** | Large Low-Rise Family | 624 (29.9%) | €2,300 | €13.7 |
+| **C3** | Small High-Rise Modern | 333 (15.9%) | €1,400 | €17.7 |
+
+All four clusters pass validation: only 1 out of 2,089 listings shows a negative silhouette score, cluster sizes are well balanced (11-43%), and rent dispersion is stable across segments (CV between 0.478 and 0.537).
+
+### Business Interpretation
+
+**C1 (Compact Traditional) is the volume segment.** At 43.2% of all listings, it anchors the market. An apartment in Centro costs €300-400 more per month than an identical one in Vallecas, despite a median rent of just €1,100. Its price intensity of €16.2/m² outperforms both larger-unit segments, confirming that tenants prioritize central location over space.
+
+**C0 and C2 share a price point but are opposite products.** Both rent for €2,300-2,400/month, but C0 offers height, views, and luxury interiors (penthouse 19.7%, elevator 99.6%, Salamanca/Chamartin), while C2 provides garden access and suburban dimensions (cottage 13.1%, Moncloa/Hortaleza). Pricing them against a shared benchmark systematically misprices both.
+
+**C3 vs. C1 reveals the floor premium.** Both clusters have a median of 2 bedrooms, yet C3 rents for €1,400/month vs. C1's €1,100. That 27.3% premium is attributable entirely to floor level (6.7 vs. 2.1) and building modernity. Benchmarking a C3 listing against a comparable C1 leaves roughly €300/month on the table.
+
+## Phase 2: Regression Pricing Model
+
+### Scope and Setup
+
+The regression focuses on C1 (Compact Traditional), selected for three reasons: it represents 43.2% of all listings, it carries the highest within-segment rent dispersion (CV = 0.532, σ = €677), and its €16.2/m² price intensity points to a location-driven pricing pattern that a district-aware model can exploit.
+
+Districts with fewer than 25 listings were grouped into an "Other" category to avoid unstable coefficients. One-hot encoding with a reference district was applied. The dataset was split into training (45%), testing (45%), and a reserved hold-out set (10%).
+
+### Model Building
+
+The baseline OLS model with all predictors achieved R² = 0.627. Bedrooms and Floor (the clustering variables) were dropped with virtually no R² loss (≈ 0.626), confirming their limited variability within the cluster. Feature selection via RFECV reduced the model to 17 predictors, and backward elimination further removed non-significant district dummies.
+
+Interaction terms between Sq.Mt and District were introduced to allow the marginal effect of size to vary by location. This captures the spatial heterogeneity that a standard linear model misses.
+
+### Final Model
+
+The final model retains 10 predictors: Sq.Mt, Outer (exterior-facing), two district dummies (Other, Puente Vallecas), and six Sq.Mt × District interactions.
+
+| Predictor | β | Significance |
+|-----------|---|-------------|
+| Intercept | €375.39 | *** |
+| Sq.Mt (baseline) | €7.38/m² | *** |
+| Outer (exterior) | +€107.27 | * |
+| District: Other | -€214.98 | ** |
+| District: Puente Vallecas | -€199.91 | * |
+| Sq.Mt × Salamanca | +€10.85/m² | *** |
+| Sq.Mt × Centro | +€6.03/m² | *** |
+| Sq.Mt × Chamberí | +€5.78/m² | *** |
+| Sq.Mt × Retiro | +€4.26/m² | *** |
+| Sq.Mt × Chamartín | +€3.79/m² | *** |
+| Sq.Mt × Moncloa | +€3.22/m² | * |
+
+The key insight: **location dominates size.** In Salamanca, each additional m² is worth €18.23 in rent (baseline €7.38 + interaction €10.85), 2.5 times the rate in peripheral districts. A 70 m² flat in Salamanca is predicted at ~€1,650, vs. ~€890 in the reference district, an 85% location premium driven entirely by address. Compact Traditional tenants "pay for address, not space."
+
+## Key Results
+
+<div class="grid grid-cols-2 gap-4 sm:grid-cols-4 not-prose my-8">
+  <MetricCard value="0.455" label="Silhouette score (K=4)" />
+  <MetricCard value="R² = 0.644" label="Pricing model fit" />
+  <MetricCard value="~20%" label="MAPE across all sets" />
+  <MetricCard value="2,089" label="Rental listings analyzed" />
+</div>
+
+| Metric | Train | Test | Reserved |
+|--------|-------|------|----------|
+| R² | 0.644 | 0.644 | 0.630 |
+| MAE (€) | 260 | 267 | 242 |
+| RMSE (€) | 391 | 426 | 364 |
+| MAPE (%) | 19.7 | 20.2 | 19.2 |
+
+R² holds at 0.644 across training and test sets and falls only to 0.630 on the reserved hold-out. MAPE stays within 19.2-20.2% across all three independent splits. The model generalizes to new listings without degradation.
+
+## Conclusions
+
+**The Madrid rental market is segmented, not continuous.** Treating all listings as a single market creates systematic pricing errors. The segmentation identifies four discrete property types with distinct price dynamics.
+
+**Where a property is located matters more than how big it is.** Within Compact Traditional, district drives rent more than floor area. A square meter in Salamanca is €10.85 above the base rate, nearly 2.5x the premium of a square meter in the average district.
+
+**Segment-first pricing prevents errors a blended model cannot see.** Two segments (C0 and C2) occupy the same price range with opposite profiles. A single-market model averages them out and produces wrong estimates for both. Segmenting first ensures the right pricing logic is applied to the right property type.
