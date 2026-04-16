@@ -22,7 +22,7 @@ const { steps, layout = 'linear' } = Astro.props;
     <div class="flex flex-col items-center gap-0">
       {steps.map((step, i) => (
         <>
-          <div class="w-full max-w-xs border border-ink-200 rounded-lg px-4 py-2.5 bg-paper-dark text-center">
+          <div class="w-full max-w-xs border border-ink-200 px-4 py-2.5 bg-paper-dark text-center">
             <span class="text-sm font-medium text-ink-900">{step.label}</span>
             {step.detail && <span class="block text-xs text-ink-400 mt-0.5">{step.detail}</span>}
           </div>
@@ -44,7 +44,7 @@ const { steps, layout = 'linear' } = Astro.props;
           {step.branches ? (
             <>
               {/* Entry node */}
-              <div class="w-full max-w-xs border border-ink-200 rounded-lg px-4 py-2.5 bg-paper-dark text-center">
+              <div class="w-full max-w-xs border border-ink-200 px-4 py-2.5 bg-paper-dark text-center">
                 <span class="text-sm font-medium text-ink-900">{step.label}</span>
                 {step.detail && <span class="block text-xs text-ink-400 mt-0.5">{step.detail}</span>}
               </div>
@@ -55,7 +55,7 @@ const { steps, layout = 'linear' } = Astro.props;
               {/* Branch container */}
               <div class="w-full grid grid-cols-2 sm:grid-cols-4 gap-2">
                 {step.branches.map((b) => (
-                  <div class="border border-ink-200 rounded-lg px-3 py-2 bg-paper-dark text-center">
+                  <div class="border border-ink-200 px-3 py-2 bg-paper-dark text-center">
                     <span class="text-xs font-medium text-ink-900">{b.label}</span>
                     {b.detail && <span class="block text-[11px] text-ink-400 mt-0.5">{b.detail}</span>}
                   </div>
@@ -73,7 +73,7 @@ const { steps, layout = 'linear' } = Astro.props;
             </>
           ) : (
             <>
-              <div class="w-full max-w-xs border border-ink-200 rounded-lg px-4 py-2.5 bg-paper-dark text-center">
+              <div class="w-full max-w-xs border border-ink-200 px-4 py-2.5 bg-paper-dark text-center">
                 <span class="text-sm font-medium text-ink-900">{step.label}</span>
                 {step.detail && <span class="block text-xs text-ink-400 mt-0.5">{step.detail}</span>}
               </div>

@@ -9,7 +9,7 @@ const { src, title, aspectRatio = '16/9' } = Astro.props;
 ---
 
 <figure class="my-8 not-prose">
-  <div class="overflow-hidden rounded-md border border-ink-150" style={`aspect-ratio: ${aspectRatio}`}>
+  <div class="overflow-hidden border border-ink-150" style={`aspect-ratio: ${aspectRatio}`}>
     <iframe
       src={src}
       title={title}

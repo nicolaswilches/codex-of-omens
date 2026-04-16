@@ -38,7 +38,7 @@ const rowStyle = `--accent: ${accentVar}; --accent-tint: ${tintVar};`;
   href={isComingSoon ? undefined : href}
   style={rowStyle}
   class:list={[
-    'project-row group flex gap-4 py-5 -mx-3 px-3 rounded-lg transition-colors',
+    'project-row group flex gap-4 py-5 -mx-3 px-3 transition-colors',
     isComingSoon ? 'cursor-default opacity-50' : '',
   ]}
 >
@@ -48,7 +48,7 @@ const rowStyle = `--accent: ${accentVar}; --accent-tint: ${tintVar};`;
   ) : (
     <span
       aria-hidden="true"
-      class="mt-1 shrink-0 h-7 w-7 rounded-sm"
+      class="mt-1 shrink-0 h-7 w-7"
       style="background-color: var(--accent);"
     ></span>
   )}
@@ -71,7 +71,7 @@ const rowStyle = `--accent: ${accentVar}; --accent-tint: ${tintVar};`;
     <p class="mt-1 text-sm text-ink-500 leading-relaxed">{tagline}</p>
     <div class="mt-2 flex flex-wrap gap-1.5">
       {tags.map((tag) => (
-        <span class="text-xs text-ink-500 border border-ink-150 rounded-full px-2 py-0.5">
+        <span class="text-xs text-ink-500 border border-ink-150 px-2 py-0.5">
           {tag}
         </span>
       ))}
