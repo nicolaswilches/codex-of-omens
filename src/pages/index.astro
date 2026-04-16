@@ -8,7 +8,7 @@ const base = import.meta.env.BASE_URL;
 ---
 
 <BaseLayout title="Nicolás Higuera Wilches — Data Science Portfolio">
-  <div class="mx-auto max-w-[40em] px-6">
+  <div class="mx-auto max-w-[46em] px-6">
     <!-- Intro -->
     <section class="pb-10">
       <h1 class="sr-only">Nicolás Higuera Wilches — Data Science Portfolio</h1>
@@ -29,7 +29,9 @@ const base = import.meta.env.BASE_URL;
             status={project.data.status}
             date={project.data.date}
             href={`${base}/projects/${project.id}/`}
-
+            accent={project.data.accent}
+            accentColor={project.data.accentColor}
+            motif={project.data.motif}
           />
         ))}
       </div>

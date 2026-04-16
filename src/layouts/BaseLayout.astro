@@ -33,16 +33,6 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     <meta property="og:url" content={canonicalURL} />
     {ogImage && <meta property="og:image" content={ogImage} />}
     <ClientRouter />
-    <script is:inline>
-      (function() {
-        const theme = localStorage.getItem('theme');
-        if (theme) document.documentElement.setAttribute('data-theme', theme);
-      })();
-      document.addEventListener('astro:after-swap', function() {
-        const theme = localStorage.getItem('theme');
-        if (theme) document.documentElement.setAttribute('data-theme', theme);
-      });
-    </script>
   </head>
   <body class="min-h-screen bg-paper text-ink-900">
     <Nav />

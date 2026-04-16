@@ -35,9 +35,31 @@
   --color-status-progress: #AD8301;
   --color-status-soon: #878580;
 
+  /* Project accent palette — extensible */
+  --color-accent-orange: #F9582B;
+  --color-accent-lavender: #BCB6ED;
+  --color-accent-green: #4B8C5E;
+  --color-accent-blue: #9EB7E6;
+
+  /* Hero tints — accent mixed ~12% into paper (precomputed) */
+  --color-accent-orange-tint: #FDE4D9;
+  --color-accent-lavender-tint: #EDECF9;
+  --color-accent-green-tint: #DDE8DF;
+  --color-accent-blue-tint: #E4ECF7;
+
+  /* Hero text — theme-agnostic (accents stay light-ish in both modes) */
+  --color-hero-ink: #100F0F;
+  --color-hero-ink-muted: #403E3C;
+
   /* Fonts */
   --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  --font-serif: 'Newsreader', Georgia, 'Times New Roman', serif;
   --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
+
+  /* Canvas widths */
+  --width-body: 46em;
+  --width-wide: 46em;
+  --width-full: 46em;
 }
 
 @layer base {
@@ -66,6 +88,30 @@
     color: var(--color-ink-700);
   }
 
+  .toc-link.toc-active {
+    color: var(--accent);
+    background-color: var(--accent-tint);
+    border-left-color: var(--accent);
+    font-weight: 500;
+  }
+
+  /* Per-project body color override (set via frontmatter bodyColor) */
+  .prose.body-override,
+  .prose.body-override h2,
+  .prose.body-override h3,
+  .prose.body-override strong,
+  .prose.body-override th {
+    color: var(--body-color);
+  }
+
+  /* Wide-break: figures, charts, motifs can escape the 40em body column. */
+  .prose .wide {
+    max-width: var(--width-wide);
+    width: 100%;
+    margin-left: 50%;
+    transform: translateX(-50%);
+  }
+
   .prose h2 {
     margin-top: 2.5rem;
     margin-bottom: 1rem;
@@ -73,6 +119,34 @@
     font-weight: 600;
     color: var(--color-ink-900);
     line-height: 1.3;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  /* Auto-numbered section labels for project pages */
+  .project-scope .prose {
+    counter-reset: section;
+  }
+
+  .project-scope .prose h2 {
+    counter-increment: section;
+  }
+
+  .project-scope .prose h2::before {
+    content: counter(section);
+    flex: 0 0 auto;
+    width: 1.925rem;
+    height: 1.925rem;
+    border-radius: 9999px;
+    background-color: var(--accent);
+    color: #FFFCF0;
+    font-size: 0.9625rem;
+    font-weight: 600;
+    line-height: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .prose h3 {
@@ -198,86 +272,3 @@
   }
 }
 
-/* Dark mode overrides */
-@layer base {
-  @media (prefers-color-scheme: dark) {
-    html:not([data-theme="light"]) {
-      --color-paper: #1C1B1A;
-      --color-paper-dark: #252422;
-      --color-surface: #232220;
-
-      --color-ink-900: #F2F0E5;
-      --color-ink-800: #E6E4D9;
-      --color-ink-700: #DAD8CE;
-      --color-ink-600: #CECDC3;
-      --color-ink-500: #B7B5AC;
-      --color-ink-400: #878580;
-      --color-ink-300: #6F6E69;
-      --color-ink-200: #575653;
-      --color-ink-150: #403E3C;
-      --color-ink-100: #333231;
-      --color-ink-50: #282726;
-
-      --color-forest: #6B9E7A;
-      --color-forest-light: #4A7C59;
-      --color-earth: #AD8301;
-      --color-earth-light: #8B6914;
-      --color-clay: #DA702C;
-      --color-clay-light: #BC5215;
-      --color-water: #3AA99F;
-      --color-water-light: #24837B;
-      --color-berry: #D14D41;
-    }
-  }
-
-  html[data-theme="dark"] {
-    --color-paper: #1C1B1A;
-    --color-paper-dark: #252422;
-    --color-surface: #232220;
-
-    --color-ink-900: #F2F0E5;
-    --color-ink-800: #E6E4D9;
-    --color-ink-700: #DAD8CE;
-    --color-ink-600: #CECDC3;
-    --color-ink-500: #B7B5AC;
-    --color-ink-400: #878580;
-    --color-ink-300: #6F6E69;
-    --color-ink-200: #575653;
-    --color-ink-150: #403E3C;
-    --color-ink-100: #333231;
-    --color-ink-50: #282726;
-
-    --color-forest: #6B9E7A;
-    --color-forest-light: #4A7C59;
-    --color-earth: #AD8301;
-    --color-earth-light: #8B6914;
-    --color-clay: #DA702C;
-    --color-clay-light: #BC5215;
-    --color-water: #3AA99F;
-    --color-water-light: #24837B;
-    --color-berry: #D14D41;
-  }
-
-  @media (prefers-color-scheme: dark) {
-    html:not([data-theme="light"]) ::selection {
-      background-color: var(--color-ink-200);
-    }
-  }
-  html[data-theme="dark"] ::selection {
-    background-color: var(--color-ink-200);
-  }
-}
-
-/* Shiki dual theme dark mode swap */
-@media (prefers-color-scheme: dark) {
-  html:not([data-theme="light"]) .shiki,
-  html:not([data-theme="light"]) .shiki span {
-    color: var(--shiki-dark) !important;
-    background-color: var(--shiki-dark-bg) !important;
-  }
-}
-html[data-theme="dark"] .shiki,
-html[data-theme="dark"] .shiki span {
-  color: var(--shiki-dark) !important;
-  background-color: var(--shiki-dark-bg) !important;
-}

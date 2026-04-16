@@ -6,9 +6,12 @@ interface Props {
   status: 'complete' | 'in-progress' | 'coming-soon';
   date: Date;
   href: string;
+  accent: 'orange' | 'lavender' | 'green' | 'blue';
+  accentColor?: string;
+  motif?: string;
 }
 
-const { title, tagline, tags, status, date, href } = Astro.props;
+const { title, tagline, tags, status, date, href, accent, accentColor, motif } = Astro.props;
 const year = date.getFullYear();
 const isComingSoon = status === 'coming-soon';
 
@@ -23,15 +26,33 @@ const statusColor = {
   'in-progress': 'text-earth',
   'coming-soon': 'text-ink-400',
 };
+
+const accentVar = accentColor ?? `var(--color-accent-${accent})`;
+const tintVar = accentColor
+  ? `color-mix(in srgb, ${accentColor} 12%, #FFFCF0)`
+  : `var(--color-accent-${accent}-tint)`;
+const rowStyle = `--accent: ${accentVar}; --accent-tint: ${tintVar};`;
 ---
 
 <a
   href={isComingSoon ? undefined : href}
+  style={rowStyle}
   class:list={[
-    'group flex gap-4 py-5 -mx-3 px-3 rounded-lg transition-colors',
-    isComingSoon ? 'cursor-default opacity-50' : 'hover:bg-paper-dark',
+    'project-row group flex gap-4 py-5 -mx-3 px-3 rounded-lg transition-colors',
+    isComingSoon ? 'cursor-default opacity-50' : '',
   ]}
 >
+  <!-- Motif marker: per-project SVG via CSS mask, or flat accent square fallback -->
+  {motif ? (
+    <img src={motif} alt="" aria-hidden="true" class="mt-1 shrink-0 h-7 w-7" />
+  ) : (
+    <span
+      aria-hidden="true"
+      class="mt-1 shrink-0 h-7 w-7 rounded-sm"
+      style="background-color: var(--accent);"
+    ></span>
+  )}
+
   <div class="min-w-0">
     <div class="flex items-baseline gap-3 flex-wrap">
       <h3 class:list={[
@@ -57,3 +78,9 @@ const statusColor = {
     </div>
   </div>
 </a>
+
+<style>
+  .project-row:not(.cursor-default):hover {
+    background-color: var(--accent-tint);
+  }
+</style>

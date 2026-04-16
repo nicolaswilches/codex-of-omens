@@ -17,6 +17,10 @@ const projects = defineCollection({
     githubUrl: z.string().url().optional(),
     liveUrl: z.string().url().optional(),
     demoEmbed: z.string().optional(),
+    accent: z.enum(['orange', 'lavender', 'green', 'blue']),
+    accentColor: z.string().optional(),
+    bodyColor: z.string().optional(),
+    motif: z.string().optional(),
   }),
 });
 

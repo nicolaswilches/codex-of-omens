@@ -9,7 +9,7 @@ Live at: https://nicolaswilches.github.io/portfolio
 - **Styling:** Tailwind CSS v4 (config in `src/styles/global.css` via `@theme`)
 - **Content:** MDX files in `src/content/projects/` with Zod schema validation
 - **Hosting:** GitHub Pages via GitHub Actions (`.github/workflows/deploy.yml`)
-- **Design:** Warm paper palette, single-column editorial layout, pixel art project icons
+- **Design:** Warm paper palette, single-column editorial layout, no project icons
 
 ## GitHub Repo
 
@@ -42,7 +42,8 @@ portfolio/
 │   ├── content/projects/           # MDX case studies (one per project)
 │   │   ├── daily-trading-system.mdx
 │   │   ├── spain-energy-risk-index.mdx
-│   │   └── iberdrola-ev-network.mdx
+│   │   ├── iberdrola-ev-network.mdx
+│   │   └── madrid-rental-market.mdx
 │   ├── components/
 │   │   ├── Nav.astro               # Static header (name + links)
 │   │   ├── Footer.astro            # Copyright + social links
@@ -88,10 +89,8 @@ duration?: string
 ## Adding a New Project
 
 1. Copy an existing `.mdx` file in `src/content/projects/`, update frontmatter and content
-2. Create a pixel art icon in `src/components/icons/` (16x16 SVG grid, `crispEdges`)
-3. Register the icon in `src/pages/index.astro` `iconMap`
-4. Add screenshots/embeds to `public/embeds/` if needed
-5. Push to main — auto-deploys
+2. Add screenshots/embeds to `public/embeds/` if needed
+3. Push to main — auto-deploys
 
 ## Design Tokens
 
