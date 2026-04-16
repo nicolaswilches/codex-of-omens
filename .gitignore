@@ -32,3 +32,4 @@ __pycache__/
 # Large media
 *.mp4
 *.mov
+*.swp
